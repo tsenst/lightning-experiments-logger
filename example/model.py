@@ -1,9 +1,24 @@
-import os
+# Copyright The Lightning AI team.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+"""
+MNISTModel
+----------
+"""
 import torch
 from typing import Tuple, Optional
 from torch.nn import functional as F
 from pytorch_lightning import LightningModule
-import pandas as pd
 from torch.utils.data import DataLoader, random_split
 from torchmetrics import MetricCollection
 from torchvision import transforms
@@ -12,20 +27,12 @@ from torchmetrics.classification import (
     MulticlassPrecision,
     MulticlassRecall,
     MulticlassAccuracy,
-    MulticlassROC,
 )
 import time
 from torchvision.datasets import MNIST
 
+
 def create_metric_collection(no_classes: int) -> MetricCollection:
-    """
-    Assemble metric collection using torchmetrics implemented metric
-    collections for the training algorithm
-
-    :param int no_classes: Number of classes ot classify
-    :return: MetricCollection object
-    """
-
     metrics = {
         "Micro-Precision": MulticlassPrecision(
             num_classes=no_classes, average="micro"
@@ -33,41 +40,50 @@ def create_metric_collection(no_classes: int) -> MetricCollection:
         "Micro-Recall": MulticlassRecall(
             num_classes=no_classes, average="micro"
         ),
-        "Macro-Precision":  MulticlassPrecision(num_classes=no_classes, average="macro"),
-        "Macro-Recall": MulticlassRecall(num_classes=no_classes, average="macro"),
+        "Macro-Precision": MulticlassPrecision(
+            num_classes=no_classes, average="macro"
+        ),
+        "Macro-Recall": MulticlassRecall(
+            num_classes=no_classes, average="macro"
+        ),
         "Micro-F1": MulticlassF1Score(num_classes=no_classes, average="micro"),
         "Macro-F1": MulticlassF1Score(num_classes=no_classes, average="macro"),
         "Accuracy": MulticlassAccuracy(num_classes=no_classes),
-        #"ROC" : MulticlassROC(num_classes=no_classes),
+        # "ROC" : MulticlassROC(num_classes=no_classes),
     }
 
     return MetricCollection(metrics)
+
+
 class MNISTModel(LightningModule):
     def __init__(
-            self,
-            data_dir: str,
-            learning_rate: float = 0.02,
-            train_batch_size: int = 32,
-            val_batch_size: int = 32,
-            test_batch_size: int = 32,
-            no_classes: int = 10,
-
+        self,
+        data_dir: str,
+        learning_rate: float = 0.02,
+        train_batch_size: int = 32,
+        val_batch_size: int = 32,
+        test_batch_size: int = 32,
+        no_classes: int = 10,
     ):
         super().__init__()
         self.data_dir = data_dir
         self.save_hyperparameters()
         self.transform = transforms.ToTensor()
-        self.train_metrics = create_metric_collection(no_classes=no_classes).clone(prefix="Train-")
-        self.val_metrics = create_metric_collection(no_classes=no_classes).clone(prefix="Val-")
-        self.test_metrics = create_metric_collection(no_classes=no_classes).clone(
-            prefix="Test-")
+        self.train_metrics = create_metric_collection(
+            no_classes=no_classes
+        ).clone(prefix="Train-")
+        self.val_metrics = create_metric_collection(
+            no_classes=no_classes
+        ).clone(prefix="Val-")
+        self.test_metrics = create_metric_collection(
+            no_classes=no_classes
+        ).clone(prefix="Test-")
         self.l1 = torch.nn.Linear(28 * 28, 10)
-        self.train_loss =0
-        self.train_step_count =0
-        self.val_loss =0
+        self.train_loss = 0
+        self.train_step_count = 0
+        self.val_loss = 0
         self.val_step_count = 0
         self.tic = time.time()
-
 
     def configure_optimizers(self) -> torch.optim.Optimizer:
         return torch.optim.Adam(
@@ -77,7 +93,9 @@ class MNISTModel(LightningModule):
     def forward(self, x):
         return torch.relu(self.l1(x.view(x.size(0), -1)))
 
-    def training_step(self, batch: Tuple[torch.Tensor, torch.Tensor], batch_nb: Optional[int]) -> torch.Tensor:
+    def training_step(
+        self, batch: Tuple[torch.Tensor, torch.Tensor], batch_nb: Optional[int]
+    ) -> torch.Tensor:
         x, y = batch
         logits = self(x)
         loss = F.cross_entropy(logits, y)
@@ -100,7 +118,9 @@ class MNISTModel(LightningModule):
         self.log_dict(metric_dict, on_epoch=True, prog_bar=True, logger=True)
         self.train_metrics.reset()
 
-    def validation_step(self, batch: Tuple[torch.Tensor, torch.Tensor], batch_nb: Optional[int]) -> None:
+    def validation_step(
+        self, batch: Tuple[torch.Tensor, torch.Tensor], batch_nb: Optional[int]
+    ) -> None:
         x, y = batch
         logits = self(x)
         loss = F.cross_entropy(logits, y)
@@ -119,7 +139,9 @@ class MNISTModel(LightningModule):
         self.log_dict(metric_dict, on_epoch=True, prog_bar=True, logger=True)
         self.val_metrics.reset()
 
-    def test_step(self, batch: Tuple[torch.Tensor, torch.Tensor], batch_nb: Optional[int]) -> None:
+    def test_step(
+        self, batch: Tuple[torch.Tensor, torch.Tensor], batch_nb: Optional[int]
+    ) -> None:
         x, y = batch
         logits = self(x)
         preds = torch.argmax(logits, dim=1)
@@ -131,26 +153,23 @@ class MNISTModel(LightningModule):
         self.log_dict(metric_dict, on_epoch=True, prog_bar=True, logger=True)
         self.test_metrics.reset()
 
-
-
-    ####################
-    # DATA RELATED HOOKS
-    ####################
-
     def prepare_data(self):
-        # download
         MNIST(self.data_dir, train=True, download=True)
         MNIST(self.data_dir, train=False, download=True)
 
     def setup(self, stage=None):
-        # Assign train/val datasets for use in dataloaders
         if stage == "fit" or stage is None:
-            mnist_full = MNIST(self.data_dir, train=True, transform=self.transform)
-            self.mnist_train, self.mnist_val = random_split(mnist_full, [55000, 5000])
+            mnist_full = MNIST(
+                self.data_dir, train=True, transform=self.transform
+            )
+            self.mnist_train, self.mnist_val = random_split(
+                mnist_full, [55000, 5000]
+            )
 
-        # Assign test dataset for use in dataloader(s)
         if stage == "test" or stage is None:
-            self.mnist_test = MNIST(self.data_dir, train=False, transform=self.transform)
+            self.mnist_test = MNIST(
+                self.data_dir, train=False, transform=self.transform
+            )
 
     def train_dataloader(self):
         return DataLoader(
@@ -158,7 +177,11 @@ class MNISTModel(LightningModule):
         )
 
     def val_dataloader(self):
-        return DataLoader(self.mnist_val, batch_size=self.hparams.val_batch_size)
+        return DataLoader(
+            self.mnist_val, batch_size=self.hparams.val_batch_size
+        )
 
     def test_dataloader(self):
-        return DataLoader(self.mnist_test, batch_size=self.hparams.test_batch_size)
+        return DataLoader(
+            self.mnist_test, batch_size=self.hparams.test_batch_size
+        )
