@@ -49,7 +49,6 @@ def create_metric_collection(no_classes: int) -> MetricCollection:
         "Micro-F1": MulticlassF1Score(num_classes=no_classes, average="micro"),
         "Macro-F1": MulticlassF1Score(num_classes=no_classes, average="macro"),
         "Accuracy": MulticlassAccuracy(num_classes=no_classes),
-        # "ROC" : MulticlassROC(num_classes=no_classes),
     }
 
     return MetricCollection(metrics)
