@@ -15,6 +15,7 @@
 SagemakerExperimentsLogger
 --------------------------
 """
+import json
 import logging
 from argparse import Namespace
 from typing import Any, Callable, Dict, Iterable, Optional, Union
@@ -29,6 +30,16 @@ from torch import Tensor
 
 log = logging.getLogger(__name__)
 
+def _prep_param_for_serialization(param: Dict[str, Any]) -> Dict[str, Any]:
+    result: Dict[str, Any] = {}
+    for keys, values in param.items():
+        if values is None:
+            result[keys] = "none"
+        elif isinstance(values, bool):
+            result[keys] = json.dumps(values)
+        else:
+            result[keys] = values
+    return result
 
 class SagemakerExperimentsLogger(Logger):
     r"""
@@ -155,9 +166,21 @@ class SagemakerExperimentsLogger(Logger):
 
     @_sagemaker_run
     def log_hyperparams(self, params: Union[Dict[str, Any], Namespace]) -> None:
-        params = _convert_params(params)
-        self._sagemaker_run.log_parameters(params)
-        self._sagemaker_run.close()
+        """Log hyperparameters.
+
+        Function map to :func:`~sagemaker.experiments.Run.log_parameters
+        of the `SageMaker Experiments API <https://sagemaker.readthedocs.io/en/stable/experiments/sagemaker.experiments.html>`_.
+        Implements the abstract function of the :class:`pytorch_lightning.loggers.logger.Logger` base class
+        and will be called automatically from :class:`pytorch_lightning.Trainer`.
+        To being compatible to :func:`~sagemaker.experiments.Run.log_parameters`, the hyperparameters will be
+        converted into dictionary and boolean will be converted to "True" and "False".
+
+        Args:
+            params (dict or namespace): a dictionary-like container with the hyperparameters
+        """
+        params_dict = _convert_params(params)
+        params_dict = _prep_param_for_serialization(params_dict)
+        self._sagemaker_run.log_parameters(params_dict)
 
     @_sagemaker_run
     def log_metrics(
@@ -165,6 +188,17 @@ class SagemakerExperimentsLogger(Logger):
         metrics: Dict[str, Union[Tensor, float]],
         step: Optional[int] = None,
     ) -> None:
+        """Log evaluation metrics.
+
+        Function map to :func:`~sagemaker.experiments.Run.log_metric
+        of the `SageMaker Experiments API <https://sagemaker.readthedocs.io/en/stable/experiments/sagemaker.experiments.html>`_.
+        Implementes the abstract function of the :class:`pytorch_lightning.loggers.logger.Logger` base class
+        and will be called automatically from :class:`pytorch_lightning.Trainer`.
+
+        Args:
+            metrics (dict of str and Tensor or float): a dictionary containing metric values.
+            step (int): Determines the iteration step of the metric (default: None)
+        """
         for metric_name, value in metrics.items():
             metric_value = value.item() if isinstance(value, Tensor) else value
             self._sagemaker_run.log_metric(
@@ -174,7 +208,6 @@ class SagemakerExperimentsLogger(Logger):
     @_sagemaker_run
     def log_precision_recall(
         self,
-        sagemaker_run: Run,
         y_true: Iterable,
         predicted_probabilities: Iterable,
         positive_label: Optional[Iterable] = None,

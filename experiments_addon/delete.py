@@ -1,12 +1,3 @@
-import time
-from typing import List
-
-import boto3
-from sagemaker.experiments._api_types import TrialComponentMetricSummary
-from sagemaker.experiments.experiment import Experiment
-from sagemaker.experiments.trial import _Trial
-from sagemaker.experiments.trial_component import _TrialComponent
-from sagemaker.session import Session
 # Copyright The Lightning AI team.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,15 +15,29 @@ from sagemaker.session import Session
 Sagemaker Experiment Delete
 ---------------------------
 """
+import logging
+import time
+from typing import List
+
+import boto3
+from sagemaker.experiments._api_types import TrialComponentMetricSummary
+from sagemaker.experiments.experiment import Experiment
+from sagemaker.experiments.trial import _Trial
+from sagemaker.experiments.trial_component import _TrialComponent
+from sagemaker.session import Session
+
+log = logging.getLogger(__name__)
 def has_metric(
     metrics: List[TrialComponentMetricSummary], metric_name: str
 ) -> bool:
-    """
-    Checks if Metric Summaries contain the searched metric summary
+    """Checks if Metric Summaries contain the searched metric summary
 
-    :param metrics: List of trial component metrics
-    :param str metric_name: Metric name to look at
-    :return: True if metric name is in trial component metrics summary
+    Args:
+        metrics (list of TrialComponentMetricSummary):  List of trial component metrics.
+        metric_name (str): Metric name to look at.
+
+    Returns:
+        Boolean that is true if metric name is in trial component metrics summary
     """
     for m in metrics:
         if m.metric_name == metric_name:
@@ -40,15 +45,18 @@ def has_metric(
     return False
 
 
-def delete_jobs_without_metric(
+def delete_run_without_metric(
     experiment_name: str, metric_name: str = "val_loss"
 ) -> None:
-    """
-    Delete all jobs for a given experiment i.e. trial components that do not
-    have the given metric.
+    """Delete all runs for a given experiment i.e. trial components that do not
+    have the given metric stored.
 
-    :param str experiment_name: Experiment name.
-    :param str metric_name: Metric name to look at.
+    Function can be useful to delete all experiment run that have been started but failed
+    or have been aborted. E.g. due to error in the code or early detected problems with the model.
+
+    Args:
+        experiment_name (str): Determines the experiment where the run to delete are.
+        metric_name (str): Determines the metric by name to check for availability.
     """
     experiment = Experiment.load(experiment_name=experiment_name)
     for trial_summary in experiment.list_trials():
@@ -59,29 +67,31 @@ def delete_jobs_without_metric(
             )
             if not has_metric(metrics=tc.metrics, metric_name=metric_name):
                 tc_name = tc.trial_component_name
-                print(
+                log.info(
                     f"[CLEAN UP] {tc_name} -> cause has not validation metric"
                 )
                 trial.remove_trial_component(tc)
                 try:
                     # comment out to keep trial components
                     tc.delete()
-                    print(f"[OK] {tc_name}")
+                    log.info(f"[OK] {tc_name}")
                 except:
                     # tc is associated with another trial
-                    print(f"[ERROR] {tc_name} unable to delete")
+                    log.info(f"[ERROR] {tc_name} unable to delete")
                     continue
                 # to prevent throttling
                 time.sleep(0.5)
 
 
-def delete_job_like(name_substr: str, experiment_name: str) -> None:
-    """
-    Delete all jobs of an experiment that fulfill <name_substr in job_name>
+def delete_runs_like(experiment_name: str, name_substr: str) -> None:
+    """Delete all runs of an experiment that fulfill <name_substr in run_name>
 
-    :param str name_substr: If this substring is in the job name. The job will
-    be deleted.
-    :param str experiment_name: Experiment name to look at.
+    Function can be useful to delete several runs with similar names from the experimentation board.
+    The function delete all run with run names that contain the name_substr.
+
+    Args:
+        experiment_name (str): Determines the experiment where the run to delete are.
+        name_substr (str): If this substring is in the job name. The job will be deleted.
     """
     experiment_to_cleanup = Experiment.load(experiment_name=experiment_name)
     for trial_summary in experiment_to_cleanup.list_trials():
@@ -92,15 +102,15 @@ def delete_job_like(name_substr: str, experiment_name: str) -> None:
             )
             tc_name = tc.trial_component_name
             if name_substr in tc_name:
-                print(f"[CLEAN UP] {tc_name}")
+                log.info(f"[CLEAN UP] {tc_name}")
                 trial.remove_trial_component(tc)
                 try:
                     # comment out to keep trial components
                     tc.delete()
-                    print(f"[OK] {tc_name}")
+                    log.info(f"[OK] {tc_name}")
                 except:
                     # tc is associated with another trial
-                    print(f"[ERROR] {tc_name} unable to delete")
+                    log.info(f"[ERROR] {tc_name} unable to delete")
                     continue
                     # to prevent throttling
                 time.sleep(0.5)
@@ -108,15 +118,18 @@ def delete_job_like(name_substr: str, experiment_name: str) -> None:
 
 def delete_experiment(experiment_name: str) -> None:
     """
-    Delete a given experiment.
+    Delete experiment and associated runs.
+
+    Args:
+        experiment_name (str): Determines the experiment to delete.
 
     :param str experiment_name: Experiment to delete.
     """
     session = boto3.Session()
     sm_session = Session(boto_session=session)
-    print("[Delete] Experiment ", experiment_name)
+    log.info("[Delete] Experiment ", experiment_name)
     exp = Experiment.load(
         experiment_name=experiment_name, sagemaker_session=sm_session
     )
     exp._delete_all(action="--force")
-    print("[OK]")
+    log.info("[OK]")
