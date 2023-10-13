@@ -21,9 +21,7 @@ def sagemaker_client():
 
 
 @pytest.fixture
-def sme_logger(
-        sagemaker_client, sts_client, s3_client, mocker
-) -> Tuple[SagemakerExperimentsLogger, Run]:
+def sme_logger(sagemaker_client, mocker) -> Tuple[SagemakerExperimentsLogger, Run]:
     mocker.patch("sagemaker.experiments.trial_component._TrialComponent.save")
     with Run(experiment_name=EXPERIMENT_NAME, run_name=RUN_NAME) as run:
         yield SagemakerExperimentsLogger(), run
