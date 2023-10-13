@@ -21,8 +21,6 @@ def sagemaker_session():
     with mock_sagemaker():
         session = Session(boto3.Session(region_name="eu-central-1"))
         client = boto3.client("sagemaker", region_name="eu-central-1")
-        client.create_experiment(ExperimentName=EXPERIMENT_NAME)
-        client.create_trial(ExperimentName=EXPERIMENT_NAME, TrialName="Default-Run-Group")
         yield session, client
 
 
@@ -31,6 +29,11 @@ def sme_logger(
         sagemaker_session, mocker
 ) -> Tuple[SagemakerExperimentsLogger, Run]:
     mocker.patch("sagemaker.experiments.trial_component._TrialComponent.save")
+    # The follow lines of code are a hot fix since moto seam to have a
+    # problems with github action runs
+    sagemaker_session[1].create_experiment(ExperimentName=EXPERIMENT_NAME)
+    sagemaker_session[1].create_trial(ExperimentName=EXPERIMENT_NAME,
+                        TrialName="Default-Run-Group")
     with Run(
         experiment_name=EXPERIMENT_NAME,
         run_name=RUN_NAME,
@@ -60,6 +63,11 @@ def test_create_logger_raise_exception(sagemaker_session) -> None:
 
 
 def test_create_logger_explicit(sagemaker_session, mocker) -> None:
+    # The follow lines of code are a hot fix since moto seam to have a
+    # problems with github action runs
+    sagemaker_session[1].create_experiment(ExperimentName=EXPERIMENT_NAME)
+    sagemaker_session[1].create_trial(ExperimentName=EXPERIMENT_NAME,
+                                      TrialName="Default-Run-Group")
     logger = SagemakerExperimentsLogger(
         experiment_name=EXPERIMENT_NAME, run_name=RUN_NAME, sagemaker_session=sagemaker_session[0]
     )
@@ -79,6 +87,11 @@ def test_create_logger_explicit(sagemaker_session, mocker) -> None:
 
 def test_create_logger_with_context(sagemaker_session, mocker) -> None:
     mocker.patch("sagemaker.experiments.trial_component._TrialComponent.save")
+    # The follow lines of code are a hot fix since moto seam to have a
+    # problems with github action runs
+    sagemaker_session[1].create_experiment(ExperimentName=EXPERIMENT_NAME)
+    sagemaker_session[1].create_trial(ExperimentName=EXPERIMENT_NAME,
+                        TrialName="Default-Run-Group")
     with Run(
         experiment_name=EXPERIMENT_NAME,
         run_name=RUN_NAME,
