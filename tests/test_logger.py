@@ -1,5 +1,5 @@
 import numpy as np
-from moto import mock_sagemaker, mock_sts, mock_s3
+from moto import mock_sagemaker
 from experiments_addon.logger import (
     SagemakerExperimentsLogger,
     _prep_param_for_serialization,
@@ -15,21 +15,9 @@ RUN_NAME = "testRunname"
 
 
 @pytest.fixture
-def s3_client():
-    with mock_s3():
-        yield boto3.client("s3")
-
-
-@pytest.fixture
-def sts_client():
-    with mock_sts():
-        yield boto3.client("sts")
-
-
-@pytest.fixture
 def sagemaker_client():
     with mock_sagemaker():
-        yield boto3.client("sagemaker")
+        yield boto3.client("sagemaker", region_name="eu-central-1")
 
 
 @pytest.fixture
