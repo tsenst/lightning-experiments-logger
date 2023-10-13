@@ -33,4 +33,4 @@ jobs:
         pip install -r requirements_tests.txt
     - name: Test with pytest
       run: |
-        pytest
+        python -m pytest tests -v  --cov-report xml --cov=experiments_addon/  --cov-fail-under=90
