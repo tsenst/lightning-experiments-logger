@@ -17,7 +17,8 @@ RUN_NAME = "testRunname"
 @pytest.fixture
 def sagemaker_client():
     with mock_sagemaker():
-        yield boto3.client("sagemaker", region_name="eu-central-1")
+        session = boto3.session.Session(region_name="eu-central-1")
+        yield session.client("sagemaker", region_name="eu-central-1")
 
 
 @pytest.fixture
