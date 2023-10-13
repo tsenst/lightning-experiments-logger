@@ -35,6 +35,10 @@ def sme_logger(
         ExperimentName=EXPERIMENT_NAME,
         TrialName=f"Default-Run-Group-{EXPERIMENT_NAME}"
     )
+    sagemaker_session[1].create_trial(
+        ExperimentName=EXPERIMENT_NAME,
+        TrialName=f"{RUN_NAME}-{EXPERIMENT_NAME}"
+    )
     with Run(
         experiment_name=EXPERIMENT_NAME,
         run_name=RUN_NAME,
@@ -71,6 +75,10 @@ def test_create_logger_explicit(sagemaker_session, mocker) -> None:
         ExperimentName=EXPERIMENT_NAME,
         TrialName=f"Default-Run-Group-{EXPERIMENT_NAME}"
     )
+    sagemaker_session[1].create_trial(
+        ExperimentName=EXPERIMENT_NAME,
+        TrialName=f"{RUN_NAME}-{EXPERIMENT_NAME}"
+    )
     logger = SagemakerExperimentsLogger(
         experiment_name=EXPERIMENT_NAME, run_name=RUN_NAME, sagemaker_session=sagemaker_session[0]
     )
@@ -96,6 +104,10 @@ def test_create_logger_with_context(sagemaker_session, mocker) -> None:
     sagemaker_session[1].create_trial(
         ExperimentName=EXPERIMENT_NAME,
         TrialName=f"Default-Run-Group-{EXPERIMENT_NAME}"
+    )
+    sagemaker_session[1].create_trial(
+        ExperimentName=EXPERIMENT_NAME,
+        TrialName=f"{RUN_NAME}-{EXPERIMENT_NAME}"
     )
     with Run(
         experiment_name=EXPERIMENT_NAME,
