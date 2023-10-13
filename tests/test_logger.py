@@ -17,7 +17,7 @@ RUN_NAME = "testrunname"
 
 
 @pytest.fixture
-def sagemaker_client():
+def sagemaker_session():
     with mock_sagemaker():
         session = Session(boto3.Session(region_name="eu-central-1"))
         yield session
