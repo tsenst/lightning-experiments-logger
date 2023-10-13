@@ -141,26 +141,22 @@ class SagemakerExperimentsLogger(Logger):
                     self._version = sagemaker_run.run_name
                     self._run_name = None
                     self._experiment_name = None
-            self._disable_logging = False
 
         except RuntimeError as e:
-            log.warning(
-                f"Disable SagemakerExperimentsLogger. No current run context "
-                f"has been found ({e}). To create a  sagemaker.experiments.run"
-                f" explicit use experiment_name and run_name argument. "
-            )
+            error_str = f"Disable SagemakerExperimentsLogger. No current run context has been found ({e}). To create a sagemaker.experiments.run explicit use experiment_name and run_name argument."
+
+            raise RuntimeError(error_str)
 
     def _sagemaker_run(fn: Callable) -> Callable:
         @rank_zero_only
         def log_fun(self, *args, **kwargs):
-            if not self._disable_logging:
-                with load_run(
-                    experiment_name=self._experiment_name,
-                    run_name=self._run_name,
-                    sagemaker_session=self._sagemaker_session,
-                ) as self._sagemaker_run:
-                    fn(self, *args, **kwargs)
-                    self._sagemaker_run.close()
+            with load_run(
+                experiment_name=self._experiment_name,
+                run_name=self._run_name,
+                sagemaker_session=self._sagemaker_session,
+            ) as self._sagemaker_run:
+                fn(self, *args, **kwargs)
+                self._sagemaker_run.close()
 
         return log_fun
 
@@ -210,7 +206,7 @@ class SagemakerExperimentsLogger(Logger):
         self,
         y_true: Iterable,
         predicted_probabilities: Iterable,
-        positive_label: Optional[Iterable] = None,
+        positive_label: Optional[Union[str,int,float]] = None,
         title: Optional[str] = None,
         is_output: bool = True,
         no_skill: Optional[int] = None,
@@ -381,7 +377,7 @@ class SagemakerExperimentsLogger(Logger):
         Returns:
             The name of the experiment.
         """
-        return self._experiment_name
+        return self._name
 
     @property
     def version(self) -> Union[int, str]:
@@ -390,4 +386,4 @@ class SagemakerExperimentsLogger(Logger):
         Returns:
             The experiment version if specified else the next version.
         """
-        return self._run_name
+        return self._version

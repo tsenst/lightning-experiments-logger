@@ -1,0 +1,4 @@
+moto
+pytest
+pytest-mock
+pytest-cov
