@@ -20,7 +20,8 @@ RUN_NAME = "testrunname"
 def sagemaker_session():
     with mock_sagemaker():
         session = Session(boto3.Session(region_name="eu-central-1"))
-        yield session
+        client = boto3.client("sagemaker")
+        yield session, client
 
 
 @pytest.fixture
@@ -31,9 +32,9 @@ def sme_logger(
     with Run(
         experiment_name=EXPERIMENT_NAME,
         run_name=RUN_NAME,
-        sagemaker_session=sagemaker_session,
+        sagemaker_session=sagemaker_session[0],
     ) as run:
-        yield SagemakerExperimentsLogger(sagemaker_session=sagemaker_session), run
+        yield SagemakerExperimentsLogger(sagemaker_session=sagemaker_session[0]), run
 
 
 @pytest.fixture
@@ -43,9 +44,9 @@ def binary_labels() -> Tuple[List, List]:
     return y_true, pred_proba
 
 
-def test_create_logger_raise_exception(sagemaker_client) -> None:
+def test_create_logger_raise_exception(sagemaker_session) -> None:
     with pytest.raises(RuntimeError) as e:
-        SagemakerExperimentsLogger(sagemaker_session=sagemaker_client)
+        SagemakerExperimentsLogger(sagemaker_session=sagemaker_session[0])
     assert (
         e.value.args[0]
         == "Disable SagemakerExperimentsLogger. No current run context has "
@@ -56,9 +57,9 @@ def test_create_logger_raise_exception(sagemaker_client) -> None:
     )
 
 
-def test_create_logger_explicit(sagemaker_client, mocker) -> None:
+def test_create_logger_explicit(sagemaker_session, mocker) -> None:
     logger = SagemakerExperimentsLogger(
-        experiment_name=EXPERIMENT_NAME, run_name=RUN_NAME, sagemaker_session=sagemaker_client
+        experiment_name=EXPERIMENT_NAME, run_name=RUN_NAME, sagemaker_session=sagemaker_session[0]
     )
     assert logger._experiment_name == EXPERIMENT_NAME
     assert logger._run_name == RUN_NAME
@@ -66,7 +67,7 @@ def test_create_logger_explicit(sagemaker_client, mocker) -> None:
     assert logger._version == RUN_NAME
     mocker.patch("sagemaker.experiments.trial_component._TrialComponent.save")
     logger.log_hyperparams({"test": "param"})
-    experiments = sagemaker_client.list_experiments()
+    experiments = sagemaker_session[1].list_experiments()
     assert len(experiments["ExperimentSummaries"]) == 1
     assert (
         experiments["ExperimentSummaries"][0]["ExperimentName"]
@@ -74,15 +75,15 @@ def test_create_logger_explicit(sagemaker_client, mocker) -> None:
     )
 
 
-def test_create_logger_with_context(sagemaker_client, mocker) -> None:
+def test_create_logger_with_context(sagemaker_session, mocker) -> None:
     mocker.patch("sagemaker.experiments.trial_component._TrialComponent.save")
     with Run(
         experiment_name=EXPERIMENT_NAME,
         run_name=RUN_NAME,
-        sagemaker_session=sagemaker_client[1],
+        sagemaker_session=sagemaker_session[0],
     ):
-        logger = SagemakerExperimentsLogger()
-        experiments = sagemaker_client.list_experiments()
+        logger = SagemakerExperimentsLogger(sagemaker_session=sagemaker_session[0])
+        experiments = sagemaker_session[1].list_experiments()
         assert logger._experiment_name is None
         assert logger._run_name is None
         assert logger.name == EXPERIMENT_NAME.lower()
