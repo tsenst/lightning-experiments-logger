@@ -9,6 +9,7 @@ from typing import Any, Tuple, Union, List
 import pytest
 import boto3
 import torch
+import os
 
 EXPERIMENT_NAME = "testExperiment"
 RUN_NAME = "testRunname"
@@ -16,9 +17,9 @@ RUN_NAME = "testRunname"
 
 @pytest.fixture
 def sagemaker_client():
+    os.environ["AWS_REGION"] = "eu-central-1"
     with mock_sagemaker():
-        session = boto3.session.Session(region_name="eu-central-1")
-        yield session.client("sagemaker", region_name="eu-central-1")
+        yield boto3.client("sagemaker", region_name="eu-central-1")
 
 
 @pytest.fixture
