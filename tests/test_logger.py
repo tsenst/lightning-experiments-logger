@@ -20,20 +20,19 @@ RUN_NAME = "testRunname"
 def sagemaker_client():
     with mock_sagemaker():
         client = boto3.client("sagemaker", region_name="eu-central-1")
-        yield client
+        session = Session(boto3.Session(region_name="eu-central-1"))
+        yield client, session
 
 
 @pytest.fixture
 def sme_logger(
-    sagemaker_client, mocker
+        sagemaker_client, mocker
 ) -> Tuple[SagemakerExperimentsLogger, Run]:
     mocker.patch("sagemaker.experiments.trial_component._TrialComponent.save")
-    session = boto3.Session(region_name="eu-central-1")
-    sm_session = Session(boto_session=session)
     with Run(
         experiment_name=EXPERIMENT_NAME,
         run_name=RUN_NAME,
-        sagemaker_session=sm_session,
+        sagemaker_session=sagemaker_client[1],
     ) as run:
         yield SagemakerExperimentsLogger(), run
 
@@ -47,7 +46,7 @@ def binary_labels() -> Tuple[List, List]:
 
 def test_create_logger_raise_exception(sagemaker_client) -> None:
     with pytest.raises(RuntimeError) as e:
-        SagemakerExperimentsLogger()
+        SagemakerExperimentsLogger(sagemaker_session=sagemaker_client[1])
     assert (
         e.value.args[0]
         == "Disable SagemakerExperimentsLogger. No current run context has "
@@ -60,7 +59,7 @@ def test_create_logger_raise_exception(sagemaker_client) -> None:
 
 def test_create_logger_explicit(sagemaker_client, mocker) -> None:
     logger = SagemakerExperimentsLogger(
-        experiment_name=EXPERIMENT_NAME, run_name=RUN_NAME
+        experiment_name=EXPERIMENT_NAME, run_name=RUN_NAME, sagemaker_session=sagemaker_client[1]
     )
     assert logger._experiment_name == EXPERIMENT_NAME
     assert logger._run_name == RUN_NAME
@@ -78,12 +77,10 @@ def test_create_logger_explicit(sagemaker_client, mocker) -> None:
 
 def test_create_logger_with_context(sagemaker_client, mocker) -> None:
     mocker.patch("sagemaker.experiments.trial_component._TrialComponent.save")
-    session = boto3.Session(region_name="eu-central-1")
-    sm_session = Session(boto_session=session)
     with Run(
         experiment_name=EXPERIMENT_NAME,
         run_name=RUN_NAME,
-        sagemaker_session=sm_session,
+        sagemaker_session=sagemaker_client[1],
     ):
         logger = SagemakerExperimentsLogger()
         experiments = sagemaker_client.list_experiments()
