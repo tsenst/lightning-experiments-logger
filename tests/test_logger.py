@@ -21,6 +21,7 @@ def sagemaker_session():
     with mock_sagemaker():
         session = Session(boto3.Session(region_name="eu-central-1"))
         client = boto3.client("sagemaker", region_name="eu-central-1")
+        client.create_experiment(ExperimentName=EXPERIMENT_NAME)
         yield session, client
 
 
