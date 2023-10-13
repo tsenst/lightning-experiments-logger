@@ -20,7 +20,7 @@ RUN_NAME = "testrunname"
 def sagemaker_session():
     with mock_sagemaker():
         session = Session(boto3.Session(region_name="eu-central-1"))
-        client = boto3.client("sagemaker")
+        client = boto3.client("sagemaker", region_name="eu-central-1")
         yield session, client
 
 
