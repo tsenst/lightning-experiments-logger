@@ -19,22 +19,21 @@ RUN_NAME = "testrunname"
 @pytest.fixture
 def sagemaker_client():
     with mock_sagemaker():
-        client = boto3.client("sagemaker", region_name="eu-central-1")
         session = Session(boto3.Session(region_name="eu-central-1"))
-        yield client, session
+        yield session
 
 
 @pytest.fixture
 def sme_logger(
-        sagemaker_client, mocker
+        sagemaker_session, mocker
 ) -> Tuple[SagemakerExperimentsLogger, Run]:
     mocker.patch("sagemaker.experiments.trial_component._TrialComponent.save")
     with Run(
         experiment_name=EXPERIMENT_NAME,
         run_name=RUN_NAME,
-        sagemaker_session=sagemaker_client[1],
+        sagemaker_session=sagemaker_session,
     ) as run:
-        yield SagemakerExperimentsLogger(), run
+        yield SagemakerExperimentsLogger(sagemaker_session=sagemaker_session), run
 
 
 @pytest.fixture
@@ -46,7 +45,7 @@ def binary_labels() -> Tuple[List, List]:
 
 def test_create_logger_raise_exception(sagemaker_client) -> None:
     with pytest.raises(RuntimeError) as e:
-        SagemakerExperimentsLogger(sagemaker_session=sagemaker_client[1])
+        SagemakerExperimentsLogger(sagemaker_session=sagemaker_client)
     assert (
         e.value.args[0]
         == "Disable SagemakerExperimentsLogger. No current run context has "
@@ -59,7 +58,7 @@ def test_create_logger_raise_exception(sagemaker_client) -> None:
 
 def test_create_logger_explicit(sagemaker_client, mocker) -> None:
     logger = SagemakerExperimentsLogger(
-        experiment_name=EXPERIMENT_NAME, run_name=RUN_NAME, sagemaker_session=sagemaker_client[1]
+        experiment_name=EXPERIMENT_NAME, run_name=RUN_NAME, sagemaker_session=sagemaker_client
     )
     assert logger._experiment_name == EXPERIMENT_NAME
     assert logger._run_name == RUN_NAME
