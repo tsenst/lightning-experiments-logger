@@ -22,6 +22,7 @@ def sagemaker_session():
         session = Session(boto3.Session(region_name="eu-central-1"))
         client = boto3.client("sagemaker", region_name="eu-central-1")
         client.create_experiment(ExperimentName=EXPERIMENT_NAME)
+        client.create_trial(ExperimentName=EXPERIMENT_NAME, TrialName="Default-Run-Group")
         yield session, client
 
 
