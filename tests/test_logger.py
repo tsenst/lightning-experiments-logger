@@ -18,9 +18,9 @@ RUN_NAME = "testRunname"
 
 @pytest.fixture
 def sagemaker_client():
-    os.environ["AWS_REGION"] = "eu-central-1"
     with mock_sagemaker():
-        yield boto3.client("sagemaker", region_name="eu-central-1")
+        client = boto3.client("sagemaker", region_name="eu-central-1")
+        yield client
 
 
 @pytest.fixture
@@ -28,7 +28,13 @@ def sme_logger(
     sagemaker_client, mocker
 ) -> Tuple[SagemakerExperimentsLogger, Run]:
     mocker.patch("sagemaker.experiments.trial_component._TrialComponent.save")
-    with Run(experiment_name=EXPERIMENT_NAME, run_name=RUN_NAME) as run:
+    session = boto3.Session(region_name="eu-central-1")
+    sm_session = Session(boto_session=session)
+    with Run(
+        experiment_name=EXPERIMENT_NAME,
+        run_name=RUN_NAME,
+        sagemaker_session=sm_session,
+    ) as run:
         yield SagemakerExperimentsLogger(), run
 
 
