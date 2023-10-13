@@ -12,8 +12,8 @@ import boto3
 import torch
 import os
 
-EXPERIMENT_NAME = "testExperiment"
-RUN_NAME = "testRunname"
+EXPERIMENT_NAME = "testexperiment"
+RUN_NAME = "testrunname"
 
 
 @pytest.fixture
