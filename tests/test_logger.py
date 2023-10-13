@@ -10,7 +10,6 @@ from typing import Any, Tuple, Union, List
 import pytest
 import boto3
 import torch
-import os
 
 EXPERIMENT_NAME = "testexperiment"
 RUN_NAME = "testrunname"
@@ -32,8 +31,10 @@ def sme_logger(
     # The follow lines of code are a hot fix since moto seam to have a
     # problems with github action runs
     sagemaker_session[1].create_experiment(ExperimentName=EXPERIMENT_NAME)
-    sagemaker_session[1].create_trial(ExperimentName=EXPERIMENT_NAME,
-                        TrialName="Default-Run-Group")
+    sagemaker_session[1].create_trial(
+        ExperimentName=EXPERIMENT_NAME,
+        TrialName=f"Default-Run-Group-{EXPERIMENT_NAME}"
+    )
     with Run(
         experiment_name=EXPERIMENT_NAME,
         run_name=RUN_NAME,
@@ -66,8 +67,10 @@ def test_create_logger_explicit(sagemaker_session, mocker) -> None:
     # The follow lines of code are a hot fix since moto seam to have a
     # problems with github action runs
     sagemaker_session[1].create_experiment(ExperimentName=EXPERIMENT_NAME)
-    sagemaker_session[1].create_trial(ExperimentName=EXPERIMENT_NAME,
-                                      TrialName="Default-Run-Group")
+    sagemaker_session[1].create_trial(
+        ExperimentName=EXPERIMENT_NAME,
+        TrialName=f"Default-Run-Group-{EXPERIMENT_NAME}"
+    )
     logger = SagemakerExperimentsLogger(
         experiment_name=EXPERIMENT_NAME, run_name=RUN_NAME, sagemaker_session=sagemaker_session[0]
     )
@@ -90,8 +93,10 @@ def test_create_logger_with_context(sagemaker_session, mocker) -> None:
     # The follow lines of code are a hot fix since moto seam to have a
     # problems with github action runs
     sagemaker_session[1].create_experiment(ExperimentName=EXPERIMENT_NAME)
-    sagemaker_session[1].create_trial(ExperimentName=EXPERIMENT_NAME,
-                        TrialName="Default-Run-Group")
+    sagemaker_session[1].create_trial(
+        ExperimentName=EXPERIMENT_NAME,
+        TrialName=f"Default-Run-Group-{EXPERIMENT_NAME}"
+    )
     with Run(
         experiment_name=EXPERIMENT_NAME,
         run_name=RUN_NAME,
