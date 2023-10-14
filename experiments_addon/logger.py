@@ -56,7 +56,7 @@ class SagemakerExperimentsLogger(Logger):
     1. Use ``SagemakerExperimentsLogger`` by explicitly passing in ``run_name`` and ``experiment_name``.
 
     If ``run_name`` and ``experiment_name`` are passed in, they are honored over
-    the default experiment config of the loffer. A new experiment with run job will be created.
+    the default experiment_name config of the loffer. A new experiment_name with run job will be created.
 
     Note:
         Both ``run_name`` and ``experiment_name`` should be supplied to make this usage work.
@@ -72,7 +72,7 @@ class SagemakerExperimentsLogger(Logger):
 
     2. Use the ``SagemakerExperimentsLogger`` in a job script without supplying ``run_name`` and ``experiment_name``.
 
-    In this case, the default experiment config (specified when creating the job) is fetched
+    In this case, the default experiment_name config (specified when creating the job) is fetched
     from the job environment to load the run. For example inside a training job.
 
     .. code:: python
@@ -88,7 +88,7 @@ class SagemakerExperimentsLogger(Logger):
     but without supplying ``run_name`` and ``experiment_name``.
 
     Every time we call ``with Run(...) as _:``, the initialized run is tracked
-    in the run context and an experiment and job is created.
+    in the run context and an experiment_name and job is created.
     Then when using ``SagemakerExperimentsLogger`` under this in the context is loaded by default.
 
     .. code:: python
@@ -104,10 +104,10 @@ class SagemakerExperimentsLogger(Logger):
     Args:
         run_name (str): The name of the run to be created (default: None).
             If it is None, run name of the job will be fetched to load the run.
-        experiment_name (str): The name of the experiment to be created (default: None).
+        experiment_name (str): The name of the experiment_name to be created (default: None).
             Note: the experiment_name must be supplied along with a valid run_name.
-            Otherwise, it will be ignored. If it is None, the experiment name will
-            be fetched to load the experiment.
+            Otherwise, it will be ignored. If it is None, the experiment_name name will
+            be fetched to load the experiment_name.
         sagemaker_session (sagemaker.session.Session): Session object which
             manages interactions with Amazon SageMaker APIs and any other
             AWS services needed. If not specified, one is created using the
@@ -372,18 +372,18 @@ class SagemakerExperimentsLogger(Logger):
 
     @property
     def name(self) -> str:
-        """Get the name of the experiment.
+        """Get the name of the experiment_name.
 
         Returns:
-            The name of the experiment.
+            The name of the experiment_name.
         """
         return self._name
 
     @property
     def version(self) -> Union[int, str]:
-        """Get the experiment version.
+        """Get the experiment_name version.
 
         Returns:
-            The experiment version if specified else the next version.
+            The experiment_name version if specified else the next version.
         """
         return self._version

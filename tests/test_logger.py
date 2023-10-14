@@ -1,34 +1,48 @@
+from typing import Any, List, Tuple, Union
+
+import boto3
 import numpy as np
+import pytest
+import torch
 from moto import mock_sagemaker
+from sagemaker.experiments.run import Run
+from sagemaker.session import Session
+
 from experiments_addon.logger import (
     SagemakerExperimentsLogger,
     _prep_param_for_serialization,
 )
-from sagemaker.experiments.run import Run
-from sagemaker.session import Session
-from typing import Any, Tuple, Union, List
-import pytest
-import boto3
-import torch
 
 EXPERIMENT_NAME = "testexperiment"
 RUN_NAME = "testrunname"
 
 
-def create_experiment_and_trial(client) -> None:
-    # The follow lines of code are a hot fix since moto seam to have a
-    # problems with github action runs
-    client.create_experiment(ExperimentName=EXPERIMENT_NAME)
+def create_run(client, experiment_name: str, run_name: str) -> None:
     client.create_trial(
-        ExperimentName=EXPERIMENT_NAME,
-        TrialName=f"Default-Run-Group-{EXPERIMENT_NAME}"
-    )
-    client.create_trial(
-        ExperimentName=EXPERIMENT_NAME,
-        TrialName=f"{EXPERIMENT_NAME}-{RUN_NAME}"
+        ExperimentName=experiment_name,
+        TrialName=f"{experiment_name}-{run_name}",
     )
     client.create_trial_component(
-        TrialComponentName=f"{EXPERIMENT_NAME}-{RUN_NAME}"
+        TrialComponentName=f"{experiment_name}-{run_name}"
+    )
+    client.associate_trial_component(
+        TrialComponentName=f"{experiment_name}-{run_name}",
+        TrialName=f"{experiment_name}-{run_name}",
+    )
+
+
+def create_experiment_and_trial(
+    client, experiment_name: str, run_name: str
+) -> None:
+    # The follow lines of code are a hot fix since moto seam to have a
+    # problems with github action runs
+    client.create_experiment(ExperimentName=experiment_name)
+    client.create_trial(
+        ExperimentName=experiment_name,
+        TrialName=f"Default-Run-Group-{experiment_name}",
+    )
+    create_run(
+        client=client, experiment_name=experiment_name, run_name=run_name
     )
 
 
@@ -42,16 +56,22 @@ def sagemaker_session():
 
 @pytest.fixture
 def sme_logger(
-        sagemaker_session, mocker
+    sagemaker_session, mocker
 ) -> Tuple[SagemakerExperimentsLogger, Run]:
     mocker.patch("sagemaker.experiments.trial_component._TrialComponent.save")
-    create_experiment_and_trial(client=sagemaker_session[1])
+    create_experiment_and_trial(
+        client=sagemaker_session[1],
+        experiment_name=EXPERIMENT_NAME,
+        run_name=RUN_NAME,
+    )
     with Run(
         experiment_name=EXPERIMENT_NAME,
         run_name=RUN_NAME,
         sagemaker_session=sagemaker_session[0],
     ) as run:
-        yield SagemakerExperimentsLogger(sagemaker_session=sagemaker_session[0]), run
+        yield SagemakerExperimentsLogger(
+            sagemaker_session=sagemaker_session[0]
+        ), run
 
 
 @pytest.fixture
@@ -75,9 +95,15 @@ def test_create_logger_raise_exception(sagemaker_session) -> None:
 
 
 def test_create_logger_explicit(sagemaker_session, mocker) -> None:
-    create_experiment_and_trial(client=sagemaker_session[1])
+    create_experiment_and_trial(
+        client=sagemaker_session[1],
+        experiment_name=EXPERIMENT_NAME,
+        run_name=RUN_NAME,
+    )
     logger = SagemakerExperimentsLogger(
-        experiment_name=EXPERIMENT_NAME, run_name=RUN_NAME, sagemaker_session=sagemaker_session[0]
+        experiment_name=EXPERIMENT_NAME,
+        run_name=RUN_NAME,
+        sagemaker_session=sagemaker_session[0],
     )
     assert logger._experiment_name == EXPERIMENT_NAME
     assert logger._run_name == RUN_NAME
@@ -95,13 +121,19 @@ def test_create_logger_explicit(sagemaker_session, mocker) -> None:
 
 def test_create_logger_with_context(sagemaker_session, mocker) -> None:
     mocker.patch("sagemaker.experiments.trial_component._TrialComponent.save")
-    create_experiment_and_trial(client=sagemaker_session[1])
+    create_experiment_and_trial(
+        client=sagemaker_session[1],
+        experiment_name=EXPERIMENT_NAME,
+        run_name=RUN_NAME,
+    )
     with Run(
         experiment_name=EXPERIMENT_NAME,
         run_name=RUN_NAME,
         sagemaker_session=sagemaker_session[0],
     ):
-        logger = SagemakerExperimentsLogger(sagemaker_session=sagemaker_session[0])
+        logger = SagemakerExperimentsLogger(
+            sagemaker_session=sagemaker_session[0]
+        )
         experiments = sagemaker_session[1].list_experiments()
         assert logger._experiment_name is None
         assert logger._run_name is None

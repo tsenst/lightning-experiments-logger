@@ -48,14 +48,14 @@ def has_metric(
 def delete_run_without_metric(
     experiment_name: str, metric_name: str = "val_loss"
 ) -> None:
-    """Delete all runs for a given experiment i.e. trial components that do not
+    """Delete all runs for a given experiment_name i.e. trial components that do not
     have the given metric stored.
 
-    Function can be useful to delete all experiment run that have been started but failed
+    Function can be useful to delete all experiment_name run that have been started but failed
     or have been aborted. E.g. due to error in the code or early detected problems with the model.
 
     Args:
-        experiment_name (str): Determines the experiment where the run to delete are.
+        experiment_name (str): Determines the experiment_name where the run to delete are.
         metric_name (str): Determines the metric by name to check for availability.
     """
     experiment = Experiment.load(experiment_name=experiment_name)
@@ -84,13 +84,13 @@ def delete_run_without_metric(
 
 
 def delete_runs_like(experiment_name: str, name_substr: str) -> None:
-    """Delete all runs of an experiment that fulfill <name_substr in run_name>
+    """Delete all runs of an experiment_name that fulfill <name_substr in run_name>
 
     Function can be useful to delete several runs with similar names from the experimentation board.
     The function delete all run with run names that contain the name_substr.
 
     Args:
-        experiment_name (str): Determines the experiment where the run to delete are.
+        experiment_name (str): Determines the experiment_name where the run to delete are.
         name_substr (str): If this substring is in the job name. The job will be deleted.
     """
     experiment_to_cleanup = Experiment.load(experiment_name=experiment_name)
@@ -118,10 +118,10 @@ def delete_runs_like(experiment_name: str, name_substr: str) -> None:
 
 def delete_experiment(experiment_name: str) -> None:
     """
-    Delete experiment and associated runs.
+    Delete experiment_name and associated runs.
 
     Args:
-        experiment_name (str): Determines the experiment to delete.
+        experiment_name (str): Determines the experiment_name to delete.
 
     :param str experiment_name: Experiment to delete.
     """
