@@ -27,6 +27,9 @@ def create_experiment_and_trial(client) -> None:
         ExperimentName=EXPERIMENT_NAME,
         TrialName=f"{EXPERIMENT_NAME}-{RUN_NAME}"
     )
+    client.create_trial_component(
+        TrialComponentName=f"{EXPERIMENT_NAME}-{RUN_NAME}"
+    )
 
 
 @pytest.fixture
