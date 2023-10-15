@@ -17,7 +17,7 @@ Sagemaker Experiment Delete
 """
 import logging
 import time
-from typing import List
+from typing import List, Optional
 
 import boto3
 from sagemaker.experiments._api_types import TrialComponentMetricSummary
@@ -27,6 +27,8 @@ from sagemaker.experiments.trial_component import _TrialComponent
 from sagemaker.session import Session
 
 log = logging.getLogger(__name__)
+
+
 def has_metric(
     metrics: List[TrialComponentMetricSummary], metric_name: str
 ) -> bool:
@@ -46,7 +48,9 @@ def has_metric(
 
 
 def delete_run_without_metric(
-    experiment_name: str, metric_name: str = "val_loss"
+    experiment_name: str,
+    metric_name: str = "val_loss",
+    sagemaker_session: Optional[Session] = None,
 ) -> None:
     """Delete all runs for a given experiment_name i.e. trial components that do not
     have the given metric stored.
@@ -58,7 +62,10 @@ def delete_run_without_metric(
         experiment_name (str): Determines the experiment_name where the run to delete are.
         metric_name (str): Determines the metric by name to check for availability.
     """
-    experiment = Experiment.load(experiment_name=experiment_name)
+
+    experiment = Experiment.load(
+        experiment_name=experiment_name, sagemaker_session=sagemaker_session
+    )
     for trial_summary in experiment.list_trials():
         trial = _Trial.load(trial_name=trial_summary.trial_name)
         for trial_component_summary in trial.list_trial_components():
@@ -83,7 +90,11 @@ def delete_run_without_metric(
                 time.sleep(0.5)
 
 
-def delete_runs_like(experiment_name: str, name_substr: str) -> None:
+def delete_runs_like(
+    experiment_name: str,
+    name_substr: str,
+    sagemaker_session: Optional[Session] = None,
+) -> None:
     """Delete all runs of an experiment_name that fulfill <name_substr in run_name>
 
     Function can be useful to delete several runs with similar names from the experimentation board.
@@ -93,7 +104,9 @@ def delete_runs_like(experiment_name: str, name_substr: str) -> None:
         experiment_name (str): Determines the experiment_name where the run to delete are.
         name_substr (str): If this substring is in the job name. The job will be deleted.
     """
-    experiment_to_cleanup = Experiment.load(experiment_name=experiment_name)
+    experiment_to_cleanup = Experiment.load(
+        experiment_name=experiment_name, sagemaker_session=sagemaker_session
+    )
     for trial_summary in experiment_to_cleanup.list_trials():
         trial = _Trial.load(trial_name=trial_summary.trial_name)
         for trial_component_summary in trial.list_trial_components():
@@ -116,7 +129,10 @@ def delete_runs_like(experiment_name: str, name_substr: str) -> None:
                 time.sleep(0.5)
 
 
-def delete_experiment(experiment_name: str) -> None:
+def delete_experiment(
+    experiment_name: str,
+    sagemaker_session: Optional[Session] = None,
+) -> None:
     """
     Delete experiment_name and associated runs.
 
@@ -125,11 +141,9 @@ def delete_experiment(experiment_name: str) -> None:
 
     :param str experiment_name: Experiment to delete.
     """
-    session = boto3.Session()
-    sm_session = Session(boto_session=session)
     log.info("[Delete] Experiment ", experiment_name)
     exp = Experiment.load(
-        experiment_name=experiment_name, sagemaker_session=sm_session
+        experiment_name=experiment_name, sagemaker_session=sagemaker_session
     )
     exp._delete_all(action="--force")
     log.info("[OK]")

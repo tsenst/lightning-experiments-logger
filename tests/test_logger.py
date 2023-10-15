@@ -17,33 +17,7 @@ EXPERIMENT_NAME = "testexperiment"
 RUN_NAME = "testrunname"
 
 
-def create_run(client, experiment_name: str, run_name: str) -> None:
-    client.create_trial(
-        ExperimentName=experiment_name,
-        TrialName=f"{experiment_name}-{run_name}",
-    )
-    client.create_trial_component(
-        TrialComponentName=f"{experiment_name}-{run_name}"
-    )
-    client.associate_trial_component(
-        TrialComponentName=f"{experiment_name}-{run_name}",
-        TrialName=f"{experiment_name}-{run_name}",
-    )
 
-
-def create_experiment_and_trial(
-    client, experiment_name: str, run_name: str
-) -> None:
-    # The follow lines of code are a hot fix since moto seam to have a
-    # problems with github action runs
-    client.create_experiment(ExperimentName=experiment_name)
-    client.create_trial(
-        ExperimentName=experiment_name,
-        TrialName=f"Default-Run-Group-{experiment_name}",
-    )
-    create_run(
-        client=client, experiment_name=experiment_name, run_name=run_name
-    )
 
 
 @pytest.fixture
@@ -59,11 +33,6 @@ def sme_logger(
     sagemaker_session, mocker
 ) -> Tuple[SagemakerExperimentsLogger, Run]:
     mocker.patch("sagemaker.experiments.trial_component._TrialComponent.save")
-    #create_experiment_and_trial(
-    #    client=sagemaker_session[1],
-    #    experiment_name=EXPERIMENT_NAME,
-    #    run_name=RUN_NAME,
-    #)
     with Run(
         experiment_name=EXPERIMENT_NAME,
         run_name=RUN_NAME,
@@ -121,11 +90,6 @@ def test_create_logger_explicit(sagemaker_session, mocker) -> None:
 
 def test_create_logger_with_context(sagemaker_session, mocker) -> None:
     mocker.patch("sagemaker.experiments.trial_component._TrialComponent.save")
-    create_experiment_and_trial(
-        client=sagemaker_session[1],
-        experiment_name=EXPERIMENT_NAME,
-        run_name=RUN_NAME,
-    )
     with Run(
         experiment_name=EXPERIMENT_NAME,
         run_name=RUN_NAME,
