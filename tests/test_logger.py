@@ -63,7 +63,7 @@ def sme_logger(
     #    client=sagemaker_session[1],
     #    experiment_name=EXPERIMENT_NAME,
     #    run_name=RUN_NAME,
-    )
+    #)
     with Run(
         experiment_name=EXPERIMENT_NAME,
         run_name=RUN_NAME,
