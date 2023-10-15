@@ -115,7 +115,10 @@ def delete_runs_like(
         experiment_name=experiment_name, sagemaker_session=sagemaker_session
     )
     for trial_summary in experiment_to_cleanup.list_trials():
-        trial = _Trial.load(trial_name=trial_summary.trial_name)
+        trial = _Trial.load(
+            trial_name=trial_summary.trial_name,
+            sagemaker_session=sagemaker_session
+        )
         for trial_component_summary in trial.list_trial_components():
             tc = _TrialComponent.load(
                 trial_component_name=trial_component_summary.trial_component_name,
