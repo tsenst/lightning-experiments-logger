@@ -3,6 +3,6 @@ setuptools==67.4.0
 scikit-learn
 pytorch-lightning==2.0.0
 torch
-sagemaker==2.125.0
+sagemaker>=2.190.0
 torchvision
 torchmetrics

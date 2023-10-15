@@ -59,10 +59,10 @@ def sme_logger(
     sagemaker_session, mocker
 ) -> Tuple[SagemakerExperimentsLogger, Run]:
     mocker.patch("sagemaker.experiments.trial_component._TrialComponent.save")
-    create_experiment_and_trial(
-        client=sagemaker_session[1],
-        experiment_name=EXPERIMENT_NAME,
-        run_name=RUN_NAME,
+    #create_experiment_and_trial(
+    #    client=sagemaker_session[1],
+    #    experiment_name=EXPERIMENT_NAME,
+    #    run_name=RUN_NAME,
     )
     with Run(
         experiment_name=EXPERIMENT_NAME,
