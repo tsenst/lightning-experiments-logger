@@ -19,7 +19,6 @@ import logging
 import time
 from typing import List, Optional
 
-import boto3
 from sagemaker.experiments._api_types import TrialComponentMetricSummary
 from sagemaker.experiments.experiment import Experiment
 from sagemaker.experiments.trial import _Trial
@@ -61,16 +60,22 @@ def delete_run_without_metric(
     Args:
         experiment_name (str): Determines the experiment_name where the run to delete are.
         metric_name (str): Determines the metric by name to check for availability.
+        sagemaker_session (Session):  Session object which  manages interactions with Amazon SageMaker APIs
+            If not specified, one is created using the default AWS configuration chain.
     """
 
     experiment = Experiment.load(
         experiment_name=experiment_name, sagemaker_session=sagemaker_session
     )
     for trial_summary in experiment.list_trials():
-        trial = _Trial.load(trial_name=trial_summary.trial_name)
+        trial = _Trial.load(
+            trial_name=trial_summary.trial_name,
+            sagemaker_session=sagemaker_session,
+        )
         for trial_component_summary in trial.list_trial_components():
             tc = _TrialComponent.load(
-                trial_component_name=trial_component_summary.trial_component_name
+                trial_component_name=trial_component_summary.trial_component_name,
+                sagemaker_session=sagemaker_session,
             )
             if not has_metric(metrics=tc.metrics, metric_name=metric_name):
                 tc_name = tc.trial_component_name
@@ -103,6 +108,8 @@ def delete_runs_like(
     Args:
         experiment_name (str): Determines the experiment_name where the run to delete are.
         name_substr (str): If this substring is in the job name. The job will be deleted.
+        sagemaker_session (Session):  Session object which  manages interactions with Amazon SageMaker APIs
+            If not specified, one is created using the default AWS configuration chain.
     """
     experiment_to_cleanup = Experiment.load(
         experiment_name=experiment_name, sagemaker_session=sagemaker_session
@@ -111,7 +118,8 @@ def delete_runs_like(
         trial = _Trial.load(trial_name=trial_summary.trial_name)
         for trial_component_summary in trial.list_trial_components():
             tc = _TrialComponent.load(
-                trial_component_name=trial_component_summary.trial_component_name
+                trial_component_name=trial_component_summary.trial_component_name,
+                sagemaker_session=sagemaker_session,
             )
             tc_name = tc.trial_component_name
             if name_substr in tc_name:
@@ -138,6 +146,8 @@ def delete_experiment(
 
     Args:
         experiment_name (str): Determines the experiment_name to delete.
+        sagemaker_session (Session):  Session object which  manages interactions with Amazon SageMaker APIs
+            If not specified, one is created using the default AWS configuration chain.
 
     :param str experiment_name: Experiment to delete.
     """
