@@ -64,11 +64,6 @@ def test_create_logger_raise_exception(sagemaker_session) -> None:
 
 
 def test_create_logger_explicit(sagemaker_session, mocker) -> None:
-    create_experiment_and_trial(
-        client=sagemaker_session[1],
-        experiment_name=EXPERIMENT_NAME,
-        run_name=RUN_NAME,
-    )
     logger = SagemakerExperimentsLogger(
         experiment_name=EXPERIMENT_NAME,
         run_name=RUN_NAME,
