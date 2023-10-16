@@ -12,7 +12,10 @@ pip install git+ssh://git@github.com:tsenst/lightning-experiments-logger.git
 ```
 
 ## Quickstart
+The SageMaker Experiments logger can be easily applied by setup an own run context:
 ```Python
+from pytorch_lightning import Trainer
+from sagemaker.experiments.run import Run
 from experiments_addon.logger import SagemakerExperimentsLogger
 
 with Run(experiment_name="testExperiment", run_name="testRun1"):
@@ -23,8 +26,9 @@ with Run(experiment_name="testExperiment", run_name="testRun1"):
     )
     ...
 ```
-or
+or by using an existing run context. For example in a SageMaker Training Step
 ```Python
+from pytorch_lightning import Trainer
 from experiments_addon.logger import SagemakerExperimentsLogger
 
 logger = SagemakerExperimentsLogger(experiment_name="TestExp", run_name="TestRun")

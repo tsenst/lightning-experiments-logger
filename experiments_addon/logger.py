@@ -158,6 +158,7 @@ class SagemakerExperimentsLogger(Logger):
 
         return log_fun
 
+    @_sagemaker_run
     def log_hyperparams(self, params: Union[Dict[str, Any], Namespace]) -> None:
         r"""
         Log hyperparameters.
@@ -176,6 +177,7 @@ class SagemakerExperimentsLogger(Logger):
         params_dict = _prep_param_for_serialization(params_dict)
         self._sagemaker_run.log_parameters(params_dict)
 
+    @_sagemaker_run
     def log_metrics(
         self,
         metrics: Dict[str, Union[Tensor, float]],
@@ -198,6 +200,7 @@ class SagemakerExperimentsLogger(Logger):
                 name=metric_name, value=metric_value, step=step
             )
 
+    @_sagemaker_run
     def log_precision_recall(
         self,
         y_true: Iterable,
@@ -238,6 +241,7 @@ class SagemakerExperimentsLogger(Logger):
             no_skill=no_skill,
         )
 
+    @_sagemaker_run
     def log_roc_curve(
         self,
         y_true: Iterable,
@@ -267,6 +271,7 @@ class SagemakerExperimentsLogger(Logger):
             y_true=y_true, y_score=y_score, title=title, is_output=is_output
         )
 
+    @_sagemaker_run
     def log_confusion_matrix(
         self,
         y_true: Iterable,
@@ -296,6 +301,7 @@ class SagemakerExperimentsLogger(Logger):
             y_true=y_true, y_pred=y_pred, title=title, is_output=is_output
         )
 
+    @_sagemaker_run
     def log_artifact(
         self,
         name: str,
@@ -324,6 +330,7 @@ class SagemakerExperimentsLogger(Logger):
             name=name, value=value, media_type=media_type, is_output=is_output
         )
 
+    @_sagemaker_run
     def log_file(
         self,
         file_path: str,
