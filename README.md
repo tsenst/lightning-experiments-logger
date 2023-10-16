@@ -8,7 +8,7 @@ SagemakerExperimentsLogger provides a simple way to log experimental data such a
 You can install the latest (nightly) version with pip using ssh with
 
 ```bash
-pip install git+ssh://git@github.com:tsenst/lightning-experiments-logger.git
+pip install git+ssh://git@github.com/tsenst/lightning-experiments-logger.git
 ```
 
 ## Quickstart
