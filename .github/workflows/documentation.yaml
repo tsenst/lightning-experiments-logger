@@ -29,11 +29,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install sphinx-autoapi sphinx-rtd-theme
           pip install .
+          pip install -r requirments.txt
+
+      - name: Run Sphinx
+        run: |
           cd docs/
           mkdir _static
           sphinx-build -v -b html . ../target/generated-docs
           cd ..
-          
+
       - name: Deploy Documentation
         uses: peaceiris/actions-gh-pages@v3
         with:
