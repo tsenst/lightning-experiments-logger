@@ -11,10 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""
-Sagemaker Experiment Delete
----------------------------
-"""
 import logging
 import time
 from typing import List, Optional
@@ -87,7 +83,7 @@ def delete_run_without_metric(
                     # comment out to keep trial components
                     tc.delete()
                     log.info(f"[OK] {tc_name}")
-                except:
+                except Exception:
                     # tc is associated with another trial
                     log.info(f"[ERROR] {tc_name} unable to delete")
                     continue
@@ -117,7 +113,7 @@ def delete_runs_like(
     for trial_summary in experiment_to_cleanup.list_trials():
         trial = _Trial.load(
             trial_name=trial_summary.trial_name,
-            sagemaker_session=sagemaker_session
+            sagemaker_session=sagemaker_session,
         )
         for trial_component_summary in trial.list_trial_components():
             tc = _TrialComponent.load(
@@ -132,7 +128,7 @@ def delete_runs_like(
                     # comment out to keep trial components
                     tc.delete()
                     log.info(f"[OK] {tc_name}")
-                except:
+                except Exception:
                     # tc is associated with another trial
                     log.info(f"[ERROR] {tc_name} unable to delete")
                     continue

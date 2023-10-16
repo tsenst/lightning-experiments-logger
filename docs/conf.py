@@ -19,6 +19,7 @@ extensions = [
     "sphinx.ext.autosummary",
     "sphinx.ext.napoleon",
     "sphinx.ext.autosectionlabel",
+    "sphinx_toolbox.decorators",
 ]
 
 templates_path = [""]
@@ -33,13 +34,7 @@ autodoc_default_options = {
     "members": True,
     "member-order": "bysource",
     "special-members": "__init__",
-    "default_flags": "show-inheritance"
-    #'undoc-members': True,
-    #'exclude-members': '__weakref__'
 }
-
-#autodoc_default_flags = ["show-inheritance", "members", "undoc-members"]
-#autodoc_member_order = "bysource"
 
 html_theme = "sphinx_rtd_theme"
 

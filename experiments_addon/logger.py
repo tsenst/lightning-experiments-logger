@@ -26,6 +26,7 @@ from torch import Tensor
 
 log = logging.getLogger(__name__)
 
+
 def _prep_param_for_serialization(param: Dict[str, Any]) -> Dict[str, Any]:
     result: Dict[str, Any] = {}
     for keys, values in param.items():
@@ -36,6 +37,7 @@ def _prep_param_for_serialization(param: Dict[str, Any]) -> Dict[str, Any]:
         else:
             result[keys] = values
     return result
+
 
 class SagemakerExperimentsLogger(Logger):
     r"""
@@ -156,15 +158,15 @@ class SagemakerExperimentsLogger(Logger):
 
         return log_fun
 
-    @_sagemaker_run
     def log_hyperparams(self, params: Union[Dict[str, Any], Namespace]) -> None:
         r"""
         Log hyperparameters.
-        Function map to :func:`~sagemaker.experiments.Run.log_parameters
-        of the `SageMaker Experiments API <https://sagemaker.readthedocs.io/en/stable/experiments/sagemaker.experiments.html>`_.
+
+        Function map to :py:meth:`sagemaker.experiments.run.Run.log_parameters`
+        of the `SageMaker Experiments API <https://sagemaker.readthedocs.io/en/stable/experiments/sagemaker.experiments.html>`_ .
         Implements the abstract function of the :class:`pytorch_lightning.loggers.logger.Logger` base class
         and will be called automatically from :class:`pytorch_lightning.Trainer`.
-        To being compatible to :func:`~sagemaker.experiments.Run.log_parameters`, the hyperparameters will be
+        To being compatible to :py:meth:`~sagemaker.experiments.Run.log_parameters`, the hyperparameters will be
         converted into dictionary and boolean will be converted to "True" and "False".
 
         Args:
@@ -174,7 +176,6 @@ class SagemakerExperimentsLogger(Logger):
         params_dict = _prep_param_for_serialization(params_dict)
         self._sagemaker_run.log_parameters(params_dict)
 
-    @_sagemaker_run
     def log_metrics(
         self,
         metrics: Dict[str, Union[Tensor, float]],
@@ -182,8 +183,8 @@ class SagemakerExperimentsLogger(Logger):
     ) -> None:
         """Log evaluation metrics.
 
-        Function map to :func:`~sagemaker.experiments.Run.log_metric
-        of the `SageMaker Experiments API <https://sagemaker.readthedocs.io/en/stable/experiments/sagemaker.experiments.html>`_.
+        Function map to :py:meth:`sagemaker.experiments.run.Run.log_metric`
+        of the `SageMaker Experiments API <https://sagemaker.readthedocs.io/en/stable/experiments/sagemaker.experiments.html>`_ .
         Implementes the abstract function of the :class:`pytorch_lightning.loggers.logger.Logger` base class
         and will be called automatically from :class:`pytorch_lightning.Trainer`.
 
@@ -197,19 +198,18 @@ class SagemakerExperimentsLogger(Logger):
                 name=metric_name, value=metric_value, step=step
             )
 
-    @_sagemaker_run
     def log_precision_recall(
         self,
         y_true: Iterable,
         predicted_probabilities: Iterable,
-        positive_label: Optional[Union[str,int,float]] = None,
+        positive_label: Optional[Union[str, int, float]] = None,
         title: Optional[str] = None,
         is_output: bool = True,
         no_skill: Optional[int] = None,
     ) -> None:
         """Create and log a precision recall graph artifact for Sagemaker Studio UI to render.
 
-        Function map to :func:`~sagemaker.experiments.Run.log_precision_recall
+        Function map to :py:meth:`sagemaker.experiments.run.Run.log_precision_recall`
         of the `SageMaker Experiments API <https://sagemaker.readthedocs.io/en/stable/experiments/sagemaker.experiments.html>`_
 
         Args:
@@ -238,7 +238,6 @@ class SagemakerExperimentsLogger(Logger):
             no_skill=no_skill,
         )
 
-    @_sagemaker_run
     def log_roc_curve(
         self,
         y_true: Iterable,
@@ -248,7 +247,7 @@ class SagemakerExperimentsLogger(Logger):
     ) -> None:
         """Create and log a receiver operating characteristic (ROC curve) artifact.
 
-        Function map to :func:`~sagemaker.experiments.Run.log_roc_curve
+        Function map to :py:meth:`sagemaker.experiments.run.Run.log_roc_curve`
         of the `SageMaker Experiments API <https://sagemaker.readthedocs.io/en/stable/experiments/sagemaker.experiments.html>`_
 
         Args:
@@ -268,7 +267,6 @@ class SagemakerExperimentsLogger(Logger):
             y_true=y_true, y_score=y_score, title=title, is_output=is_output
         )
 
-    @_sagemaker_run
     def log_confusion_matrix(
         self,
         y_true: Iterable,
@@ -278,7 +276,7 @@ class SagemakerExperimentsLogger(Logger):
     ) -> None:
         """Create and log a confusion matrix artifact.
 
-        Function map to :func:`~sagemaker.experiments.Run.log_confusion_matrix
+        Function map to :py:meth:`sagemaker.experiments.run.Run.log_confusion_matrix`
         of the `SageMaker Experiments API <https://sagemaker.readthedocs.io/en/stable/experiments/sagemaker.experiments.html>`_
 
         Args:
@@ -298,7 +296,6 @@ class SagemakerExperimentsLogger(Logger):
             y_true=y_true, y_pred=y_pred, title=title, is_output=is_output
         )
 
-    @_sagemaker_run
     def log_artifact(
         self,
         name: str,
@@ -308,7 +305,7 @@ class SagemakerExperimentsLogger(Logger):
     ) -> None:
         """Record a single artifact.
 
-        Function map to :func:`~sagemaker.experiments.Run.log_artifact
+        Function map to :py:meth:`sagemaker.experiments.run.Run.log_artifact`
         of the `SageMaker Experiments API <https://sagemaker.readthedocs.io/en/stable/experiments/sagemaker.experiments.html>`_
 
         Args:
@@ -327,7 +324,6 @@ class SagemakerExperimentsLogger(Logger):
             name=name, value=value, media_type=media_type, is_output=is_output
         )
 
-    @_sagemaker_run
     def log_file(
         self,
         file_path: str,
@@ -337,7 +333,7 @@ class SagemakerExperimentsLogger(Logger):
     ) -> None:
         """Upload a file to s3 and store it as an input/output artifact.
 
-        Function map to :func:`~sagemaker.experiments.Run.log_file
+        Function map to :py:meth:`sagemaker.experiments.run.Run.log_file`
         of the `SageMaker Experiments API <https://sagemaker.readthedocs.io/en/stable/experiments/sagemaker.experiments.html>`_
 
         Args:
@@ -356,24 +352,24 @@ class SagemakerExperimentsLogger(Logger):
             media_type=media_type,
             is_output=is_output,
         )
-        #Example:
+        # Example:
         #
-        #self.logger.log_file(...)
+        # self.logger.log_file(...)
 
     @property
     def name(self) -> str:
-        """Get the name of the experiment_name.
+        """Get the name of the experiment.
 
         Returns:
-            The name of the experiment_name.
+            ``experiment_name`` of the current run.
         """
         return self._name
 
     @property
     def version(self) -> Union[int, str]:
-        """Get the experiment_name version.
+        """Get the version which is similar to the run name.
 
         Returns:
-            The experiment_name version if specified else the next version.
+            ``run_name`` of the current run.
         """
         return self._version
