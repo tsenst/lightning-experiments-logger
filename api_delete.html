@@ -49,7 +49,12 @@
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="api_logger.html">SagemakerExperimentsLogger Class</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Delete Experiments and Runs</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Delete Experiments and Runs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#experiments_addon.delete.delete_experiment"><code class="docutils literal notranslate"><span class="pre">delete_experiment</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#experiments_addon.delete.delete_runs_like"><code class="docutils literal notranslate"><span class="pre">delete_runs_like</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#experiments_addon.delete.delete_run_without_metric"><code class="docutils literal notranslate"><span class="pre">delete_run_without_metric</span></code></a></li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -78,6 +83,59 @@
              
   <section id="delete-experiments-and-runs">
 <h1>Delete Experiments and Runs<a class="headerlink" href="#delete-experiments-and-runs" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="experiments_addon.delete.delete_experiment">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">experiments_addon.delete.</span></span><span class="sig-name descname"><span class="pre">delete_experiment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">experiment_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sagemaker_session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Session</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiments_addon.delete.delete_experiment" title="Link to this definition"></a></dt>
+<dd><p>Delete experiment_name and associated runs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>experiment_name</strong> (<em>str</em>) – Determines the experiment_name to delete.</p></li>
+<li><p><strong>sagemaker_session</strong> (<em>Session</em>) – Session object which  manages interactions with Amazon SageMaker APIs
+If not specified, one is created using the default AWS configuration chain.</p></li>
+<li><p><strong>experiment_name</strong> – Experiment to delete.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="experiments_addon.delete.delete_runs_like">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">experiments_addon.delete.</span></span><span class="sig-name descname"><span class="pre">delete_runs_like</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">experiment_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_substr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sagemaker_session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Session</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiments_addon.delete.delete_runs_like" title="Link to this definition"></a></dt>
+<dd><p>Delete all runs of an experiment_name that fulfill &lt;name_substr in run_name&gt;</p>
+<p>Function can be useful to delete several runs with similar names from the experimentation board.
+The function delete all run with run names that contain the name_substr.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>experiment_name</strong> (<em>str</em>) – Determines the experiment_name where the run to delete are.</p></li>
+<li><p><strong>name_substr</strong> (<em>str</em>) – If this substring is in the job name. The job will be deleted.</p></li>
+<li><p><strong>sagemaker_session</strong> (<em>Session</em>) – Session object which  manages interactions with Amazon SageMaker APIs
+If not specified, one is created using the default AWS configuration chain.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="experiments_addon.delete.delete_run_without_metric">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">experiments_addon.delete.</span></span><span class="sig-name descname"><span class="pre">delete_run_without_metric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">experiment_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'val_loss'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sagemaker_session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Session</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiments_addon.delete.delete_run_without_metric" title="Link to this definition"></a></dt>
+<dd><p>Delete all runs for a given experiment_name i.e. trial components that do not
+have the given metric stored.</p>
+<p>Function can be useful to delete all experiment_name run that have been started but failed
+or have been aborted. E.g. due to error in the code or early detected problems with the model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>experiment_name</strong> (<em>str</em>) – Determines the experiment_name where the run to delete are.</p></li>
+<li><p><strong>metric_name</strong> (<em>str</em>) – Determines the metric by name to check for availability.</p></li>
+<li><p><strong>sagemaker_session</strong> (<em>Session</em>) – Session object which  manages interactions with Amazon SageMaker APIs
+If not specified, one is created using the default AWS configuration chain.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 

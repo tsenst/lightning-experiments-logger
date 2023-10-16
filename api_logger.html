@@ -49,7 +49,16 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">SagemakerExperimentsLogger Class</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">SagemakerExperimentsLogger Class</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#experiments_addon.logger.SagemakerExperimentsLogger"><code class="docutils literal notranslate"><span class="pre">SagemakerExperimentsLogger</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#experiments_addon.logger.SagemakerExperimentsLogger.log_hyperparams"><code class="docutils literal notranslate"><span class="pre">SagemakerExperimentsLogger.log_hyperparams()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#experiments_addon.logger.SagemakerExperimentsLogger.log_metrics"><code class="docutils literal notranslate"><span class="pre">SagemakerExperimentsLogger.log_metrics()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#experiments_addon.logger.SagemakerExperimentsLogger.name"><code class="docutils literal notranslate"><span class="pre">SagemakerExperimentsLogger.name</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#experiments_addon.logger.SagemakerExperimentsLogger.version"><code class="docutils literal notranslate"><span class="pre">SagemakerExperimentsLogger.version</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="api_delete.html">Delete Experiments and Runs</a></li>
 </ul>
 
@@ -79,6 +88,129 @@
              
   <section id="sagemakerexperimentslogger-class">
 <h1>SagemakerExperimentsLogger Class<a class="headerlink" href="#sagemakerexperimentslogger-class" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="experiments_addon.logger.SagemakerExperimentsLogger">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">experiments_addon.logger.</span></span><span class="sig-name descname"><span class="pre">SagemakerExperimentsLogger</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">run_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">experiment_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sagemaker_session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Session</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiments_addon.logger.SagemakerExperimentsLogger" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Logger</span></code></p>
+<p>Log to <a class="reference external" href="https://sagemaker.readthedocs.io/en/stable/experiments/sagemaker.experiments.html#run">AWS Sagemaker Experiments</a> .</p>
+<p>Implemented using <code class="xref py py-mod docutils literal notranslate"><span class="pre">experiments</span></code> API. Install api with pip:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>sagemaker
+</pre></div>
+</div>
+<p>It can be used in several ways:</p>
+<ol class="arabic simple">
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">SagemakerExperimentsLogger</span></code> by explicitly passing in <code class="docutils literal notranslate"><span class="pre">run_name</span></code> and <code class="docutils literal notranslate"><span class="pre">experiment_name</span></code>.</p></li>
+</ol>
+<p>If <code class="docutils literal notranslate"><span class="pre">run_name</span></code> and <code class="docutils literal notranslate"><span class="pre">experiment_name</span></code> are passed in, they are honored over
+the default experiment_name config of the loffer. A new experiment_name with run job will be created.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Both <code class="docutils literal notranslate"><span class="pre">run_name</span></code> and <code class="docutils literal notranslate"><span class="pre">experiment_name</span></code> should be supplied to make this usage work.
+Otherwise, you may get a <code class="docutils literal notranslate"><span class="pre">ValueError</span></code>.</p>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pytorch_lightning</span> <span class="kn">import</span> <span class="n">Trainer</span>
+<span class="kn">from</span> <span class="nn">experiments_addon.logger</span> <span class="kn">import</span> <span class="n">SagemakerExperimentsLogger</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">SagemakerExperimentsLogger</span><span class="p">(</span><span class="n">experiment_name</span><span class="o">=</span><span class="s2">&quot;test_experiment&quot;</span><span class="p">,</span> <span class="n">run_name</span><span class="o">=</span><span class="s2">&quot;test_run&quot;</span><span class="p">)</span>
+<span class="n">trainer</span> <span class="o">=</span> <span class="n">Trainer</span><span class="p">(</span><span class="n">logger</span><span class="o">=</span><span class="n">logger</span><span class="p">)</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Use the <code class="docutils literal notranslate"><span class="pre">SagemakerExperimentsLogger</span></code> in a job script without supplying <code class="docutils literal notranslate"><span class="pre">run_name</span></code> and <code class="docutils literal notranslate"><span class="pre">experiment_name</span></code>.</p></li>
+</ol>
+<p>In this case, the default experiment_name config (specified when creating the job) is fetched
+from the job environment to load the run. For example inside a training job.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pytorch_lightning</span> <span class="kn">import</span> <span class="n">Trainer</span>
+<span class="kn">from</span> <span class="nn">sagemaker.experiments.run</span> <span class="kn">import</span> <span class="n">Run</span><span class="p">:</span>
+<span class="kn">from</span> <span class="nn">experiments_addon.logger</span> <span class="kn">import</span> <span class="n">SagemakerExperimentsLogger</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">SagemakerExperimentsLogger</span><span class="p">()</span>
+<span class="n">trainer</span> <span class="o">=</span> <span class="n">Trainer</span><span class="p">(</span><span class="n">logger</span><span class="o">=</span><span class="n">logger</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>3. Use the <code class="docutils literal notranslate"><span class="pre">SagemakerExperimentsLogger</span></code> in a notebook within a run context (i.e. the <code class="docutils literal notranslate"><span class="pre">with</span></code> block)
+but without supplying <code class="docutils literal notranslate"><span class="pre">run_name</span></code> and <code class="docutils literal notranslate"><span class="pre">experiment_name</span></code>.</p>
+<p>Every time we call <code class="docutils literal notranslate"><span class="pre">with</span> <span class="pre">Run(...)</span> <span class="pre">as</span> <span class="pre">_:</span></code>, the initialized run is tracked
+in the run context and an experiment_name and job is created.
+Then when using <code class="docutils literal notranslate"><span class="pre">SagemakerExperimentsLogger</span></code> under this in the context is loaded by default.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pytorch_lightning</span> <span class="kn">import</span> <span class="n">Trainer</span>
+<span class="kn">from</span> <span class="nn">sagemaker.experiments.run</span> <span class="kn">import</span> <span class="n">Run</span>
+<span class="kn">from</span> <span class="nn">experiments_addon.logger</span> <span class="kn">import</span> <span class="n">SagemakerExperimentsLogger</span>
+
+<span class="k">with</span> <span class="n">Run</span><span class="p">(</span><span class="n">experiment_name</span><span class="o">=</span><span class="s2">&quot;test_experiment&quot;</span><span class="p">,</span> <span class="n">run_name</span><span class="o">=</span><span class="s2">&quot;test_run&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">_</span><span class="p">:</span>
+    <span class="n">logger</span> <span class="o">=</span> <span class="n">SagemakerExperimentsLogger</span><span class="p">()</span>
+    <span class="n">trainer</span> <span class="o">=</span> <span class="n">Trainer</span><span class="p">(</span><span class="n">logger</span><span class="o">=</span><span class="n">logger</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>run_name</strong> (<em>str</em>) – The name of the run to be created (default: None).
+If it is None, run name of the job will be fetched to load the run.</p></li>
+<li><p><strong>experiment_name</strong> (<em>str</em>) – The name of the experiment_name to be created (default: None).
+Note: the experiment_name must be supplied along with a valid run_name.
+Otherwise, it will be ignored. If it is None, the experiment_name name will
+be fetched to load the experiment_name.</p></li>
+<li><p><strong>sagemaker_session</strong> (<em>sagemaker.session.Session</em>) – Session object which
+manages interactions with Amazon SageMaker APIs and any other
+AWS services needed. If not specified, one is created using the
+default AWS configuration chain.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="experiments_addon.logger.SagemakerExperimentsLogger.log_hyperparams">
+<span class="sig-name descname"><span class="pre">log_hyperparams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiments_addon.logger.SagemakerExperimentsLogger.log_hyperparams" title="Link to this definition"></a></dt>
+<dd><p>Record hyperparameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>params</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">Namespace</span></code> or <cite>Dict</cite> containing the hyperparameters</p></li>
+<li><p><strong>args</strong> – Optional positional arguments, depends on the specific logger being used</p></li>
+<li><p><strong>kwargs</strong> – Optional keyword arguments, depends on the specific logger being used</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="experiments_addon.logger.SagemakerExperimentsLogger.log_metrics">
+<span class="sig-name descname"><span class="pre">log_metrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiments_addon.logger.SagemakerExperimentsLogger.log_metrics" title="Link to this definition"></a></dt>
+<dd><p>Records metrics. This method logs metrics as soon as it received them.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>metrics</strong> – Dictionary with metric names as keys and measured quantities as values</p></li>
+<li><p><strong>step</strong> – Step number at which the metrics should be recorded</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="experiments_addon.logger.SagemakerExperimentsLogger.name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#experiments_addon.logger.SagemakerExperimentsLogger.name" title="Link to this definition"></a></dt>
+<dd><p>Get the name of the experiment_name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The name of the experiment_name.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="experiments_addon.logger.SagemakerExperimentsLogger.version">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">version</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#experiments_addon.logger.SagemakerExperimentsLogger.version" title="Link to this definition"></a></dt>
+<dd><p>Get the experiment_name version.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The experiment_name version if specified else the next version.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 
