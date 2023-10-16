@@ -158,8 +158,8 @@ class SagemakerExperimentsLogger(Logger):
 
     @_sagemaker_run
     def log_hyperparams(self, params: Union[Dict[str, Any], Namespace]) -> None:
-        """Log hyperparameters.
-
+        r"""
+        Log hyperparameters.
         Function map to :func:`~sagemaker.experiments.Run.log_parameters
         of the `SageMaker Experiments API <https://sagemaker.readthedocs.io/en/stable/experiments/sagemaker.experiments.html>`_.
         Implements the abstract function of the :class:`pytorch_lightning.loggers.logger.Logger` base class
@@ -228,7 +228,6 @@ class SagemakerExperimentsLogger(Logger):
         Example::
 
             self.logger.log_precision_recall(...)
-
         """
         self._sagemaker_run.log_precision_recall(
             y_true=y_true,
@@ -264,7 +263,6 @@ class SagemakerExperimentsLogger(Logger):
         Example::
 
             self.logger.log_roc_curve(...)
-
         """
         self._sagemaker_run.log_roc_curve(
             y_true=y_true, y_score=y_score, title=title, is_output=is_output
@@ -295,7 +293,6 @@ class SagemakerExperimentsLogger(Logger):
         Example::
 
             self.logger.log_confusion_matrix(...)
-
         """
         self._sagemaker_run.log_confusion_matrix(
             y_true=y_true, y_pred=y_pred, title=title, is_output=is_output
@@ -325,7 +322,6 @@ class SagemakerExperimentsLogger(Logger):
         Example::
 
             self.logger.log_artifact(...)
-
         """
         self._sagemaker_run.log_artifact(
             name=name, value=value, media_type=media_type, is_output=is_output
@@ -353,11 +349,6 @@ class SagemakerExperimentsLogger(Logger):
             is_output (bool): Determines direction of association to the
                 run. Defaults to True (output artifact).
                 If set to False then represented as input association.
-
-        Example::
-
-            self.logger.log_file(...)
-
         """
         self._sagemaker_run.log_file(
             file_path=file_path,
@@ -365,6 +356,9 @@ class SagemakerExperimentsLogger(Logger):
             media_type=media_type,
             is_output=is_output,
         )
+        #Example:
+        #
+        #self.logger.log_file(...)
 
     @property
     def name(self) -> str:
