@@ -1,9 +1,6 @@
 Delete Experiments and Runs
 ---------------------------
 
-.. autoclass:: experiments_addon.delete.delete_experiment
-
-.. autoclass:: experiments_addon.delete.delete_runs_like
-
-.. autoclass:: experiments_addon.delete.delete_run_without_metric
+.. automodule:: experiments_addon.delete
+    :members: delete_experiment, delete_runs_like, delete_run_without_metric
 
