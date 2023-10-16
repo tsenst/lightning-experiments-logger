@@ -1,0 +1,11 @@
+*/MNIST/*
+MNIST/
+.idea
+*/lightning_logs/*
+*/__pycache__/*
+*.code-workspace
+*.ckpt
+*.xml
+/target/
+/build/
+*.egg-info

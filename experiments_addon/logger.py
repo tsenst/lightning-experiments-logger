@@ -11,10 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""
-SagemakerExperimentsLogger
---------------------------
-"""
 import json
 import logging
 from argparse import Namespace
@@ -45,7 +41,7 @@ class SagemakerExperimentsLogger(Logger):
     r"""
     Log to `AWS Sagemaker Experiments <https://sagemaker.readthedocs.io/en/stable/experiments/sagemaker.experiments.html#run>`_ .
 
-    Implemented using :module:`~sagemaker.experiments` API. Install api with pip:
+    Implemented using :mod:`~sagemaker.experiments` API. Install api with pip:
 
     .. code-block:: bash
 
