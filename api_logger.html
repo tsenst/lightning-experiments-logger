@@ -54,13 +54,24 @@
 <li class="toctree-l3"><a class="reference internal" href="#experiments_addon.logger.SagemakerExperimentsLogger.__init__"><code class="docutils literal notranslate"><span class="pre">SagemakerExperimentsLogger.__init__()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#experiments_addon.logger.SagemakerExperimentsLogger.log_hyperparams"><code class="docutils literal notranslate"><span class="pre">SagemakerExperimentsLogger.log_hyperparams()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#experiments_addon.logger.SagemakerExperimentsLogger.log_metrics"><code class="docutils literal notranslate"><span class="pre">SagemakerExperimentsLogger.log_metrics()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#experiments_addon.logger.SagemakerExperimentsLogger.log_precision_recall"><code class="docutils literal notranslate"><span class="pre">SagemakerExperimentsLogger.log_precision_recall()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#experiments_addon.logger.SagemakerExperimentsLogger.log_roc_curve"><code class="docutils literal notranslate"><span class="pre">SagemakerExperimentsLogger.log_roc_curve()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#experiments_addon.logger.SagemakerExperimentsLogger.log_confusion_matrix"><code class="docutils literal notranslate"><span class="pre">SagemakerExperimentsLogger.log_confusion_matrix()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#experiments_addon.logger.SagemakerExperimentsLogger.log_artifact"><code class="docutils literal notranslate"><span class="pre">SagemakerExperimentsLogger.log_artifact()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#experiments_addon.logger.SagemakerExperimentsLogger.log_file"><code class="docutils literal notranslate"><span class="pre">SagemakerExperimentsLogger.log_file()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#experiments_addon.logger.SagemakerExperimentsLogger.name"><code class="docutils literal notranslate"><span class="pre">SagemakerExperimentsLogger.name</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#experiments_addon.logger.SagemakerExperimentsLogger.version"><code class="docutils literal notranslate"><span class="pre">SagemakerExperimentsLogger.version</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="api_delete.html">Delete Experiments and Runs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_delete.html">Delete Experiments and Runs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api_delete.html#experiments_addon.delete.has_metric"><code class="docutils literal notranslate"><span class="pre">has_metric()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_delete.html#experiments_addon.delete.delete_run_without_metric"><code class="docutils literal notranslate"><span class="pre">delete_run_without_metric()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_delete.html#experiments_addon.delete.delete_runs_like"><code class="docutils literal notranslate"><span class="pre">delete_runs_like()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_delete.html#experiments_addon.delete.delete_experiment"><code class="docutils literal notranslate"><span class="pre">delete_experiment()</span></code></a></li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -166,28 +177,159 @@ default AWS configuration chain.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="experiments_addon.logger.SagemakerExperimentsLogger.log_hyperparams">
-<span class="sig-name descname"><span class="pre">log_hyperparams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiments_addon.logger.SagemakerExperimentsLogger.log_hyperparams" title="Link to this definition"></a></dt>
-<dd><p>Record hyperparameters.</p>
+<span class="sig-name descname"><span class="pre">log_hyperparams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Namespace</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#experiments_addon.logger.SagemakerExperimentsLogger.log_hyperparams" title="Link to this definition"></a></dt>
+<dd><p>Log hyperparameters.</p>
+<p>Function map to <code class="xref py py-meth docutils literal notranslate"><span class="pre">sagemaker.experiments.run.Run.log_parameters()</span></code>
+of the <a class="reference external" href="https://sagemaker.readthedocs.io/en/stable/experiments/sagemaker.experiments.html">SageMaker Experiments API</a> .
+Implements the abstract function of the <code class="xref py py-class docutils literal notranslate"><span class="pre">pytorch_lightning.loggers.logger.Logger</span></code> base class
+and will be called automatically from <code class="xref py py-class docutils literal notranslate"><span class="pre">pytorch_lightning.Trainer</span></code>.
+To being compatible to <code class="xref py py-meth docutils literal notranslate"><span class="pre">log_parameters()</span></code>, the hyperparameters will be
+converted into dictionary and boolean will be converted to “True” and “False”.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>params</strong> – <code class="xref py py-class docutils literal notranslate"><span class="pre">Namespace</span></code> or <cite>Dict</cite> containing the hyperparameters</p></li>
-<li><p><strong>args</strong> – Optional positional arguments, depends on the specific logger being used</p></li>
-<li><p><strong>kwargs</strong> – Optional keyword arguments, depends on the specific logger being used</p></li>
-</ul>
+<dd class="field-odd"><p><strong>params</strong> (<em>dict</em><em> or </em><em>namespace</em>) – a dictionary-like container with the hyperparameters</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="experiments_addon.logger.SagemakerExperimentsLogger.log_metrics">
-<span class="sig-name descname"><span class="pre">log_metrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#experiments_addon.logger.SagemakerExperimentsLogger.log_metrics" title="Link to this definition"></a></dt>
-<dd><p>Records metrics. This method logs metrics as soon as it received them.</p>
+<span class="sig-name descname"><span class="pre">log_metrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">metrics</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tensor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#experiments_addon.logger.SagemakerExperimentsLogger.log_metrics" title="Link to this definition"></a></dt>
+<dd><p>Log evaluation metrics.</p>
+<p>Function map to <code class="xref py py-meth docutils literal notranslate"><span class="pre">sagemaker.experiments.run.Run.log_metric()</span></code>
+of the <a class="reference external" href="https://sagemaker.readthedocs.io/en/stable/experiments/sagemaker.experiments.html">SageMaker Experiments API</a> .
+Implementes the abstract function of the <code class="xref py py-class docutils literal notranslate"><span class="pre">pytorch_lightning.loggers.logger.Logger</span></code> base class
+and will be called automatically from <code class="xref py py-class docutils literal notranslate"><span class="pre">pytorch_lightning.Trainer</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>metrics</strong> – Dictionary with metric names as keys and measured quantities as values</p></li>
-<li><p><strong>step</strong> – Step number at which the metrics should be recorded</p></li>
+<li><p><strong>metrics</strong> (<em>dict</em><em> of </em><em>str and Tensor</em><em> or </em><em>float</em>) – a dictionary containing metric values.</p></li>
+<li><p><strong>step</strong> (<em>int</em>) – Determines the iteration step of the metric (default: None)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="experiments_addon.logger.SagemakerExperimentsLogger.log_precision_recall">
+<span class="sig-name descname"><span class="pre">log_precision_recall</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_true</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predicted_probabilities</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">positive_label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_output</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_skill</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#experiments_addon.logger.SagemakerExperimentsLogger.log_precision_recall" title="Link to this definition"></a></dt>
+<dd><p>Create and log a precision recall graph artifact for Sagemaker Studio UI to render.</p>
+<p>Function map to <code class="xref py py-meth docutils literal notranslate"><span class="pre">sagemaker.experiments.run.Run.log_precision_recall()</span></code>
+of the <a class="reference external" href="https://sagemaker.readthedocs.io/en/stable/experiments/sagemaker.experiments.html">SageMaker Experiments API</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y_true</strong> (<em>list</em><em> or </em><em>array</em>) – True labels. If labels are not binary
+then positive_label should be given.</p></li>
+<li><p><strong>predicted_probabilities</strong> (<em>list</em><em> or </em><em>array</em>) – Estimated/predicted probabilities.</p></li>
+<li><p><strong>positive_label</strong> (<em>str</em><em> or </em><em>int</em>) – Label of the positive class (default: None).</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – Title of the graph (default: None).</p></li>
+<li><p><strong>is_output</strong> (<em>bool</em>) – Determines direction of association to the
+run. Defaults to True (output artifact).
+If set to False then represented as input association.</p></li>
+<li><p><strong>no_skill</strong> (<em>int</em>) – The precision threshold under which the classifier cannot discriminate
+between the classes and would predict a random class or a constant class in
+all cases (default: None).</p></li>
+</ul>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">log_precision_recall</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="experiments_addon.logger.SagemakerExperimentsLogger.log_roc_curve">
+<span class="sig-name descname"><span class="pre">log_roc_curve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_true</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_score</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_output</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#experiments_addon.logger.SagemakerExperimentsLogger.log_roc_curve" title="Link to this definition"></a></dt>
+<dd><p>Create and log a receiver operating characteristic (ROC curve) artifact.</p>
+<p>Function map to <code class="xref py py-meth docutils literal notranslate"><span class="pre">sagemaker.experiments.run.Run.log_roc_curve()</span></code>
+of the <a class="reference external" href="https://sagemaker.readthedocs.io/en/stable/experiments/sagemaker.experiments.html">SageMaker Experiments API</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y_true</strong> (<em>list</em><em> or </em><em>array</em>) – True labels. If labels are not binary
+then positive_label should be given.</p></li>
+<li><p><strong>y_score</strong> (<em>list</em><em> or </em><em>array</em>) – Estimated/predicted probabilities.</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – Title of the graph (default: None).</p></li>
+<li><p><strong>is_output</strong> (<em>bool</em>) – Determines direction of association to the
+run. Defaults to True (output artifact).
+If set to False then represented as input association.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">log_roc_curve</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="experiments_addon.logger.SagemakerExperimentsLogger.log_confusion_matrix">
+<span class="sig-name descname"><span class="pre">log_confusion_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_true</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_pred</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_output</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#experiments_addon.logger.SagemakerExperimentsLogger.log_confusion_matrix" title="Link to this definition"></a></dt>
+<dd><p>Create and log a confusion matrix artifact.</p>
+<p>Function map to <code class="xref py py-meth docutils literal notranslate"><span class="pre">sagemaker.experiments.run.Run.log_confusion_matrix()</span></code>
+of the <a class="reference external" href="https://sagemaker.readthedocs.io/en/stable/experiments/sagemaker.experiments.html">SageMaker Experiments API</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>y_true</strong> (<em>list</em><em> or </em><em>array</em>) – True labels. If labels are not binary
+then positive_label should be given.</p></li>
+<li><p><strong>y_pred</strong> (<em>list</em><em> or </em><em>array</em>) – Predicted labels.</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – Title of the graph (default: None).</p></li>
+<li><p><strong>is_output</strong> (<em>bool</em>) – Determines direction of association to the
+run. Defaults to True (output artifact).
+If set to False then represented as input association.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">log_confusion_matrix</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="experiments_addon.logger.SagemakerExperimentsLogger.log_artifact">
+<span class="sig-name descname"><span class="pre">log_artifact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">media_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_output</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#experiments_addon.logger.SagemakerExperimentsLogger.log_artifact" title="Link to this definition"></a></dt>
+<dd><p>Record a single artifact.</p>
+<p>Function map to <code class="xref py py-meth docutils literal notranslate"><span class="pre">sagemaker.experiments.run.Run.log_artifact()</span></code>
+of the <a class="reference external" href="https://sagemaker.readthedocs.io/en/stable/experiments/sagemaker.experiments.html">SageMaker Experiments API</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – The name of the artifact.</p></li>
+<li><p><strong>value</strong> (<em>str</em>) – The value.</p></li>
+<li><p><strong>media_type</strong> (<em>str</em>) – The MediaType (MIME type) of the value (default: None).</p></li>
+<li><p><strong>is_output</strong> (<em>bool</em>) – Determines direction of association to the
+run. Defaults to True (output artifact).
+If set to False then represented as input association.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">log_artifact</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="experiments_addon.logger.SagemakerExperimentsLogger.log_file">
+<span class="sig-name descname"><span class="pre">log_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">media_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_output</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#experiments_addon.logger.SagemakerExperimentsLogger.log_file" title="Link to this definition"></a></dt>
+<dd><p>Upload a file to s3 and store it as an input/output artifact.</p>
+<p>Function map to <code class="xref py py-meth docutils literal notranslate"><span class="pre">sagemaker.experiments.run.Run.log_file()</span></code>
+of the <a class="reference external" href="https://sagemaker.readthedocs.io/en/stable/experiments/sagemaker.experiments.html">SageMaker Experiments API</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_path</strong> (<em>str</em>) – The path of the local file to upload.</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – The name of the artifact (default: None).</p></li>
+<li><p><strong>media_type</strong> (<em>str</em>) – The MediaType (MIME type) of the file.
+If not specified, this library will attempt to infer the media type
+from the file extension of <code class="docutils literal notranslate"><span class="pre">file_path</span></code>.</p></li>
+<li><p><strong>is_output</strong> (<em>bool</em>) – Determines direction of association to the
+run. Defaults to True (output artifact).
+If set to False then represented as input association.</p></li>
 </ul>
 </dd>
 </dl>
