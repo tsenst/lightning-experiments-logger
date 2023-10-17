@@ -8,9 +8,10 @@ The SageMaker Experiments logger can be easily applied:
 
     logger = SagemakerExperimentsLogger(experiment_name="TestExp", run_name="TestRun")
     trainer = Trainer(
-    logger=logger,
-    ...
+        logger=logger,
+        ...
     )
+    trainer.fit(...)
 
 A more detailed demonstration of the usage of the :class:`~experiments_addon.logger.SagemakerExperimentsLogger` class can be found in the notebook: `example/tutorial.ipynb`_.
 

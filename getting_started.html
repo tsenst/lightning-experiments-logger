@@ -105,9 +105,10 @@
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">SagemakerExperimentsLogger</span><span class="p">(</span><span class="n">experiment_name</span><span class="o">=</span><span class="s2">&quot;TestExp&quot;</span><span class="p">,</span> <span class="n">run_name</span><span class="o">=</span><span class="s2">&quot;TestRun&quot;</span><span class="p">)</span>
 <span class="n">trainer</span> <span class="o">=</span> <span class="n">Trainer</span><span class="p">(</span>
-<span class="n">logger</span><span class="o">=</span><span class="n">logger</span><span class="p">,</span>
-<span class="o">...</span>
+    <span class="n">logger</span><span class="o">=</span><span class="n">logger</span><span class="p">,</span>
+    <span class="o">...</span>
 <span class="p">)</span>
+<span class="n">trainer</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>A more detailed demonstration of the usage of the <a class="reference internal" href="api_logger.html#experiments_addon.logger.SagemakerExperimentsLogger" title="experiments_addon.logger.SagemakerExperimentsLogger"><code class="xref py py-class docutils literal notranslate"><span class="pre">SagemakerExperimentsLogger</span></code></a> class can be found in the notebook: <a class="reference external" href="https://github.com/tsenst/lightning-experiments-logger/blob/main/example/tutorial.ipynb">example/tutorial.ipynb</a>.</p>
