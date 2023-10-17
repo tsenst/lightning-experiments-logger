@@ -100,7 +100,7 @@
              
   <section id="quick-started">
 <h1>Quick Started<a class="headerlink" href="#quick-started" title="Link to this heading"></a></h1>
-<p>The SageMaker Experiments logger can be easily applied:</p>
+<p>The SageMaker Experiments logger can be easily applied to the PyTorch Lightning <a class="reference external" href="https://lightning.ai/docs/pytorch/stable/common/trainer.html">Trainer</a> class for model training:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">experiments_addon.logger</span> <span class="kn">import</span> <span class="n">SagemakerExperimentsLogger</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">SagemakerExperimentsLogger</span><span class="p">(</span><span class="n">experiment_name</span><span class="o">=</span><span class="s2">&quot;TestExp&quot;</span><span class="p">,</span> <span class="n">run_name</span><span class="o">=</span><span class="s2">&quot;TestRun&quot;</span><span class="p">)</span>
