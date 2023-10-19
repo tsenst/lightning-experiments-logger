@@ -21,7 +21,7 @@ setuptools.setup(
     description="PyTorch Lightning Experiment Logger",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="ssh://git@github.com:tsenst/lightning-experiments-logger.git",
+    url="https://tsenst.github.io/lightning-experiments-logger/",
     install_requires=[
         "setuptools>=67.4.0",
         "scikit-learn>=1.3.1",
