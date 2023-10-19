@@ -5,18 +5,6 @@ import setuptools
 
 here = pathlib.Path(__file__).parent.absolute()
 
-with pathlib.Path(here / "requirements.txt").open() as requirements_txt:
-    install_requires = [
-        str(requirement)
-        for requirement in pkg_resources.parse_requirements(requirements_txt)
-    ]
-
-with pathlib.Path(here / "requirements_tests.txt").open() as requirements_txt:
-    extra_requires = [
-        str(requirement)
-        for requirement in pkg_resources.parse_requirements(requirements_txt)
-    ]
-
 DESCRIPTION = "PyTorch Lightning Experiment Logger"
 
 try:
@@ -34,10 +22,16 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="ssh://git@github.com:tsenst/lightning-experiments-logger.git",
-    install_requires=install_requires,
+    install_requires=[
+        "setuptools>=67.4.0",
+        "scikit-learn>=1.3.1",
+        "pytorch-lightning>=2.0.0",
+        "sagemaker>=2.190.0",
+        "torchvision>=0.16.0",
+        "torchmetrics>=0.11.4"],
     extras_require={
         "dev": ["black", "flake8", "isort", "mypy", "pylint", "types-PyYAML"],
-        "tests": extra_requires,
+        "tests": ["moto==4.2.5", "pytest", "pytest-mock", "pytest-cov"]
     },
     packages=setuptools.find_packages(exclude="tests"),
     keywords="pytorch-lightning, AWS SageMaker, machine learning",
