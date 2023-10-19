@@ -21,7 +21,7 @@ setuptools.setup(
     description="PyTorch Lightning Experiment Logger",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://tsenst.github.io/lightning-experiments-logger/",
+    url="https://github.com/tsenst/lightning-experiments-logger",
     install_requires=[
         "setuptools>=67.4.0",
         "scikit-learn>=1.3.1",
@@ -37,7 +37,9 @@ setuptools.setup(
     keywords="pytorch-lightning, AWS SageMaker, machine learning",
     license="Apache 2.0",
     classifiers=[
-        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
         "Intended Audience :: Developers",
         "Intended Audience :: Education",
         "Intended Audience :: Science/Research",
