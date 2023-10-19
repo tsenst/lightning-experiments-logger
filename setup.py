@@ -15,7 +15,7 @@ except FileNotFoundError:
 
 setuptools.setup(
     name="sagemaker-experiments-logger",
-    version="1.0.0",
+    version="0.1.0",
     author="Tobias Senst",
     author_email="tobias.senst@googlemail.com",
     description="PyTorch Lightning Experiment Logger",
