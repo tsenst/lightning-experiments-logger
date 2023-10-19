@@ -5,13 +5,13 @@ import setuptools
 
 here = pathlib.Path(__file__).parent.absolute()
 
-with pathlib.Path("requirements.txt").open() as requirements_txt:
+with pathlib.Path(here / "requirements.txt").open() as requirements_txt:
     install_requires = [
         str(requirement)
         for requirement in pkg_resources.parse_requirements(requirements_txt)
     ]
 
-with pathlib.Path("requirements_tests.txt").open() as requirements_txt:
+with pathlib.Path(here / "requirements_tests.txt").open() as requirements_txt:
     extra_requires = [
         str(requirement)
         for requirement in pkg_resources.parse_requirements(requirements_txt)
@@ -26,7 +26,7 @@ except FileNotFoundError:
     long_description = DESCRIPTION
 
 setuptools.setup(
-    name="lightning-experiments-logger",
+    name="sagemaker-experiments-logger",
     version="1.0.0",
     author="Tobias Senst",
     author_email="tobias.senst@googlemail.com",
