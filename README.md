@@ -45,7 +45,7 @@ API Documentation: https://tsenst.github.io/lightning-experiments-logger/index.h
 Try [Tutorial Notebook](https://github.com/tsenst/lightning-experiments-logger/blob/main/example/tutorial.ipynb) to learn more about the usage of the [SagemakerExperimentsLogger](https://tsenst.github.io/lightning-experiments-logger/api_logger.html) class try out the 
 
 ## Contributing
-We welcome all contributions!
+I welcome all contributions!
 
 To file a bug or request a feature, please file a GitHub issue. Pull requests are welcome.
 
