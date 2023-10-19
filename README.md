@@ -10,7 +10,7 @@ For detailed documentation, including the API reference, see [Read the Docs](htt
 You can install the latest (nightly) version with pip using ssh with
 
 ```bash
-pip install git+ssh://git@github.com/tsenst/lightning-experiments-logger.git
+pip install sagemaker-experiments-logger
 ```
 
 ## Quickstart
