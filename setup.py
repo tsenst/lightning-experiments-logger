@@ -23,12 +23,9 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/tsenst/lightning-experiments-logger",
     install_requires=[
-        "setuptools>=67.4.0",
-        "scikit-learn>=1.3.1",
         "pytorch-lightning>=2.0.0",
         "sagemaker>=2.190.0",
-        "torchvision>=0.16.0",
-        "torchmetrics>=0.11.4"],
+    ],
     extras_require={
         "dev": ["black", "flake8", "isort", "mypy", "pylint", "types-PyYAML"],
         "tests": ["moto==4.2.5", "pytest", "pytest-mock", "pytest-cov"]
