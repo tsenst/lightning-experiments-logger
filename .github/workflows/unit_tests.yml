@@ -1,5 +1,4 @@
-name: Publish Package PyPI
-
+name: Unit Tests
 on:
   push:
     branches: [ "main" ]
